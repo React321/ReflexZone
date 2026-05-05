@@ -13,7 +13,9 @@
       text-align: center;
     }
 
-    h1 { margin-top: 20px; }
+    h1 {
+      margin-top: 20px;
+    }
 
     #gameBox {
       margin: 60px auto;
@@ -59,7 +61,7 @@
 <h1>⚡ ReflexZone</h1>
 
 <input id="username" placeholder="Username">
-<input id="country" placeholder="Country (optional)">
+<input id="country" placeholder="Country code (AE, US)">
 
 <div id="gameBox">Click to start</div>
 
@@ -73,13 +75,15 @@
 <script>
 
 ////////////////////////////////////////////////////
-// 🔥 SUPABASE (YOUR KEYS INSERTED)
+// 🔥 SUPABASE SETUP (PASTE YOUR KEYS)
 ////////////////////////////////////////////////////
-const SUPABASE_URL = "https://lishugsxdskcbciwzbia.supabase.co";
+const SUPABASE_URL = "lishugsxdskcbciwzbia.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpc2h1Z3N4ZHNrY2JjaXd6YmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5OTI2MzEsImV4cCI6MjA5MzU2ODYzMX0.7rdwPZqj-l9wV4-5SmDvEcDNjiI_gTzcQE4QLO4tIcM";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+////////////////////////////////////////////////////
+// GAME STATE
 ////////////////////////////////////////////////////
 let startTime;
 let waiting = false;
@@ -87,7 +91,7 @@ let waiting = false;
 const box = document.getElementById("gameBox");
 
 ////////////////////////////////////////////////////
-// GAME LOOP
+// START GAME
 ////////////////////////////////////////////////////
 box.addEventListener("click", async () => {
 
@@ -118,23 +122,26 @@ box.addEventListener("click", async () => {
 });
 
 ////////////////////////////////////////////////////
-// FUNNY TEXT
+// FUNNY MESSAGES
 ////////////////////////////////////////////////////
 function getMessage(ms) {
-  if (ms < 120) return "⚡ NOT HUMAN!";
-  if (ms < 180) return "🔥 Insane!";
-  if (ms < 250) return "😎 Good!";
+  if (ms < 120) return "⚡ INSANE reflexes!";
+  if (ms < 180) return "🔥 Very fast!";
+  if (ms < 250) return "😎 Good job!";
   if (ms < 350) return "🙂 Average";
-  return "🐌 Grandma faster than you 💀";
+  return "🐌 My grandma faster than you 💀";
 }
 
+////////////////////////////////////////////////////
+// SHOW RESULT
+////////////////////////////////////////////////////
 function showResult(ms) {
   document.getElementById("result").innerHTML =
     `⏱ ${ms} ms<br>${getMessage(ms)}`;
 }
 
 ////////////////////////////////////////////////////
-// FLAG SYSTEM
+// COUNTRY FLAGS
 ////////////////////////////////////////////////////
 function getFlag(code) {
   if (!code) return "🌍";
@@ -144,7 +151,7 @@ function getFlag(code) {
 }
 
 ////////////////////////////////////////////////////
-// AUTO COUNTRY
+// GET COUNTRY AUTO
 ////////////////////////////////////////////////////
 async function getCountry() {
   try {
@@ -157,7 +164,7 @@ async function getCountry() {
 }
 
 ////////////////////////////////////////////////////
-// 🧠 BEST SCORE ONLY SYSTEM
+// 🧠 MAIN LOGIC (BEST SCORE ONLY)
 ////////////////////////////////////////////////////
 async function handleScore(time) {
 
@@ -166,6 +173,7 @@ async function handleScore(time) {
   let name = document.getElementById("username").value || "Player";
   let country = await getCountry();
 
+  // check if player exists
   let { data } = await supabase
     .from("leaderboard")
     .select("*")
@@ -173,10 +181,13 @@ async function handleScore(time) {
     .maybeSingle();
 
   if (!data) {
+    // first time player
     await supabase.from("leaderboard").insert([
       { name, time, country }
     ]);
+
   } else {
+    // only update if better score
     if (time < data.time) {
       await supabase
         .from("leaderboard")
@@ -189,7 +200,7 @@ async function handleScore(time) {
 }
 
 ////////////////////////////////////////////////////
-// 🏆 LEADERBOARD
+// 🏆 LOAD LEADERBOARD
 ////////////////////////////////////////////////////
 async function loadLeaderboard() {
 
