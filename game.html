@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reaction Arena - Game</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #gameBox {
+      margin: 60px auto;
+      width: 300px;
+      height: 200px;
+      background: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 20px;
+      user-select: none;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .back {
+      margin-top: 30px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #1f2937;
+      color: white;
+    }
+
+    .back:hover {
+      background: #374151;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>⚡ Reaction Arena</h1>
+
+<div id="gameBox">Click to start</div>
+
+<div id="result"></div>
+
+<button class="back" onclick="window.location.href='index.html'">
+  ⬅ Back to Home
+</button>
+
+<script>
+
+////////////////////////////////////////////////////
+// GAME STATE
+////////////////////////////////////////////////////
+let startTime = 0;
+let waiting = false;
+
+const box = document.getElementById("gameBox");
+
+////////////////////////////////////////////////////
+// GAME LOGIC
+////////////////////////////////////////////////////
+box.addEventListener("click", () => {
+
+  if (!waiting) {
+
+    box.innerText = "Wait...";
+    box.style.background = "red";
+    waiting = true;
+
+    let delay = Math.random() * 3000 + 1500;
+
+    setTimeout(() => {
+      box.innerText = "CLICK!";
+      box.style.background = "green";
+      startTime = Date.now();
+    }, delay);
+
+  } else {
+
+    let time = Date.now() - startTime;
+
+    box.innerText = "Click to try again";
+    box.style.background = "red";
+    waiting = false;
+
+    showResult(time);
+  }
+});
+
+////////////////////////////////////////////////////
+// FUNNY MESSAGES
+////////////////////////////////////////////////////
+function getMessage(ms) {
+
+  if (ms < 120) return "⚡ NOT HUMAN!";
+  if (ms < 180) return "🔥 INSANE!";
+  if (ms < 250) return "😎 GOOD!";
+  if (ms < 350) return "🙂 AVERAGE";
+  return "🐌 Grandma faster than you 💀";
+}
+
+function showResult(ms) {
+  document.getElementById("result").innerHTML =
+    `⏱ ${ms} ms<br>${getMessage(ms)}`;
+}
+
+</script>
+
+</body>
+</html>
