@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Reaction Arena</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #111827, #0b1220);
+      font-family: Arial;
+      background: #0f172a;
       color: white;
       text-align: center;
-
-      /* ✅ FIX: full screen layout */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -29,17 +27,16 @@
     .logo {
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #00ffcc, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #00e5ff;
+      text-shadow: 0 0 20px #00e5ff;
     }
 
     .tagline {
-      font-size: 18px;
-      opacity: 0.8;
       margin-top: 10px;
+      opacity: 0.8;
     }
 
+    /* 🔥 YOUR GLOW BUTTON (ADDED) */
     .play-btn {
       margin-top: 30px;
       padding: 15px 30px;
@@ -50,11 +47,14 @@
       background: linear-gradient(90deg, #22c55e, #06b6d4);
       color: black;
       font-weight: bold;
-      transition: 0.2s;
+
+      box-shadow: 0 0 20px #00e5ff;
+      transition: 0.3s;
     }
 
     .play-btn:hover {
-      transform: scale(1.05);
+      transform: scale(1.1);
+      box-shadow: 0 0 40px #00e5ff;
     }
 
     .card {
@@ -70,14 +70,12 @@
       opacity: 0.9;
     }
 
-    /* ✅ FOOTER FIX */
     footer {
       margin-top: auto;
       background: #0b1220;
       padding: 15px;
       font-size: 13px;
-      opacity: 0.85;
-      border-top: 1px solid #1f2937;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -88,7 +86,10 @@
 
   <div class="hero">
     <div class="logo">⚡ Reaction Arena</div>
-    <div class="tagline">Test your reflexes. Compete worldwide. Become #1.</div>
+
+    <div class="tagline">
+      Only 1% can react under 150ms 😈
+    </div>
 
     <button class="play-btn" onclick="window.location.href='game.html'">
       ▶ Play Now
@@ -96,19 +97,22 @@
   </div>
 
   <div class="card">
-    <h3>🔥 Why people love it</h3>
-    <div class="feature">⚡ Insanely fast reaction game</div>
-    <div class="feature">🏆 Global leaderboard (coming soon)</div>
-    <div class="feature">😈 Funny rage messages</div>
-    <div class="feature">📱 Works on all devices</div>
+    <h3>🔥 Why Play?</h3>
+    <div class="feature">⚡ Insane reaction challenge</div>
+    <div class="feature">🏆 Compete globally</div>
+    <div class="feature">😈 Beat your friends</div>
+  </div>
+
+  <div class="card">
+    <h3>👨‍💻 Creators</h3>
+    <div class="feature">Abdurrahman - abdurrahmanomg15@gmail.com</div>
+    <div class="feature">Abdul Azeem - azzeem987@gmail.com</div>
   </div>
 
 </div>
 
-<!-- ✅ FOOTER -->
 <footer>
-  Made by <b>Abdurrahman & Abdul Azeem</b><br>
-  Emails: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
+  Made with ❤️ by Abdurrahman & Abdul Azeem
 </footer>
 
 </body>
