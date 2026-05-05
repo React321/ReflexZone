@@ -16,7 +16,7 @@
     h1 { margin-top: 20px; }
 
     #gameBox {
-      margin: 50px auto 20px;
+      margin: 60px auto;
       width: 300px;
       height: 200px;
       background: red;
@@ -29,28 +29,29 @@
       user-select: none;
     }
 
-    #result, #rank {
-      margin-top: 10px;
+    #result {
+      margin-top: 15px;
       font-size: 18px;
     }
 
-    #leaderboard {
-      position: fixed;
-      right: 10px;
-      top: 10px;
-      width: 200px;
-      background: #111827;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: left;
-      font-size: 13px;
+    #rank {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #38bdf8;
     }
 
-    input {
-      padding: 8px;
-      border-radius: 6px;
+    .back {
+      margin-top: 20px;
+      padding: 10px 15px;
       border: none;
-      margin-bottom: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #1f2937;
+      color: white;
+    }
+
+    .back:hover {
+      background: #374151;
     }
   </style>
 </head>
@@ -59,40 +60,23 @@
 
 <h1>⚡ Reaction Arena</h1>
 
-<input id="username" placeholder="Enter name">
-
 <div id="gameBox">Click to start</div>
 
 <div id="result"></div>
 <div id="rank"></div>
 
-<div id="leaderboard">
-  🏆 Leaderboard
-  <div id="scores">Loading...</div>
-</div>
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<button class="back" onclick="window.location.href='index.html'">
+  ⬅ Back
+</button>
 
 <script>
 
-////////////////////////////////////////////////////
-// 🔑 PASTE YOUR KEYS HERE
-////////////////////////////////////////////////////
-const SUPABASE_URL = "haaidshyuwgelgucbnbi.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhYWlkc2h5dXdnZWxndWNibmJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDA1MzksImV4cCI6MjA5MzU3NjUzOX0.d0J_CBJ14yDD4IOKJsyR80-Odmd5rjeh7Y2iGTYWWvA";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-////////////////////////////////////////////////////
-// GAME
-////////////////////////////////////////////////////
 let startTime = 0;
 let waiting = false;
 
 const box = document.getElementById("gameBox");
 
-box.addEventListener("click", async () => {
+box.addEventListener("click", () => {
 
   if (!waiting) {
 
@@ -117,12 +101,11 @@ box.addEventListener("click", async () => {
     waiting = false;
 
     showResult(time);
-    await saveScore(time);
   }
 });
 
 ////////////////////////////////////////////////////
-// RANKS
+// 🧠 RANK SYSTEM
 ////////////////////////////////////////////////////
 function getRank(ms) {
   if (ms < 120) return "👽 ALIEN";
@@ -140,64 +123,6 @@ function showResult(ms) {
   document.getElementById("rank").innerHTML =
     `🏆 Rank: <b>${getRank(ms)}</b>`;
 }
-
-////////////////////////////////////////////////////
-// SAVE SCORE
-////////////////////////////////////////////////////
-async function saveScore(time) {
-
-  let name = document.getElementById("username").value || "Player";
-
-  let { data } = await supabase
-    .from("leaderboard")
-    .select("*")
-    .eq("name", name)
-    .maybeSingle();
-
-  if (!data) {
-    await supabase.from("leaderboard").insert([
-      { name, time }
-    ]);
-  } else {
-    if (time < data.time) {
-      await supabase
-        .from("leaderboard")
-        .update({ time })
-        .eq("name", name);
-    }
-  }
-
-  loadLeaderboard();
-}
-
-////////////////////////////////////////////////////
-// LOAD LEADERBOARD
-////////////////////////////////////////////////////
-async function loadLeaderboard() {
-
-  const { data, error } = await supabase
-    .from("leaderboard")
-    .select("*")
-    .order("time", { ascending: true })
-    .limit(10);
-
-  if (error || !data) {
-    document.getElementById("scores").innerHTML = "Error";
-    return;
-  }
-
-  let html = "";
-  let rank = 1;
-
-  data.forEach(p => {
-    html += `${rank}. ${p.name} - ${p.time}ms<br>`;
-    rank++;
-  });
-
-  document.getElementById("scores").innerHTML = html;
-}
-
-loadLeaderboard();
 
 </script>
 
