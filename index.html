@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Reaction Arena</title>
+
   <style>
     body {
       margin: 0;
@@ -53,7 +54,6 @@
       padding: 20px;
       background: #111827;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
     .feature {
@@ -68,13 +68,15 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="hero">
     <div class="logo">⚡ Reaction Arena</div>
     <div class="tagline">Test your reflexes. Compete worldwide. Become #1.</div>
-    
-    <button class="play-btn" onclick="location.href='index.html'">
+
+    <!-- ✅ FIXED BUTTON -->
+    <button class="play-btn" onclick="window.location.href='game.html'">
       ▶ Play Now
     </button>
   </div>
