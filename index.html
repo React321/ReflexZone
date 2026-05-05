@@ -11,6 +11,15 @@
       background: radial-gradient(circle at top, #111827, #0b1220);
       color: white;
       text-align: center;
+
+      /* ✅ FIX: full screen layout */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      flex: 1;
     }
 
     .hero {
@@ -61,21 +70,26 @@
       opacity: 0.9;
     }
 
+    /* ✅ FOOTER FIX */
     footer {
-      margin-top: 60px;
-      font-size: 12px;
-      opacity: 0.5;
+      margin-top: auto;
+      background: #0b1220;
+      padding: 15px;
+      font-size: 13px;
+      opacity: 0.85;
+      border-top: 1px solid #1f2937;
     }
   </style>
 </head>
 
 <body>
 
+<div class="content">
+
   <div class="hero">
     <div class="logo">⚡ Reaction Arena</div>
     <div class="tagline">Test your reflexes. Compete worldwide. Become #1.</div>
 
-    <!-- ✅ FIXED BUTTON -->
     <button class="play-btn" onclick="window.location.href='game.html'">
       ▶ Play Now
     </button>
@@ -84,14 +98,18 @@
   <div class="card">
     <h3>🔥 Why people love it</h3>
     <div class="feature">⚡ Insanely fast reaction game</div>
-    <div class="feature">🏆 Global leaderboard</div>
+    <div class="feature">🏆 Global leaderboard (coming soon)</div>
     <div class="feature">😈 Funny rage messages</div>
     <div class="feature">📱 Works on all devices</div>
   </div>
 
-  <footer>
-    Made for competitive players • Reaction Arena
-  </footer>
+</div>
+
+<!-- ✅ FOOTER -->
+<footer>
+  Made by <b>Abdurrahman & Abdul Azeem</b><br>
+  Emails: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
+</footer>
 
 </body>
 </html>
