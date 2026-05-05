@@ -1,117 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ReflexZone</title>
-
+  <meta charset="UTF-8" />
+  <title>Reaction Arena</title>
   <style>
     body {
-      background: #0f172a;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #111827, #0b1220);
       color: white;
-      font-family: Arial;
       text-align: center;
     }
 
-    h1 {
-      margin-top: 20px;
+    .hero {
+      padding: 80px 20px 40px;
     }
 
-    #gameBox {
-      margin: 60px auto;
-      width: 300px;
-      height: 200px;
-      background: red;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      user-select: none;
+    .logo {
+      font-size: 50px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00ffcc, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    #result {
-      margin-top: 20px;
+    .tagline {
       font-size: 18px;
+      opacity: 0.8;
+      margin-top: 10px;
     }
 
-    input {
-      padding: 8px;
-      border-radius: 6px;
+    .play-btn {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 18px;
       border: none;
-      margin-top: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(90deg, #22c55e, #06b6d4);
+      color: black;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .card {
+      margin: 40px auto;
+      width: 300px;
+      padding: 20px;
+      background: #111827;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .feature {
+      margin: 10px 0;
+      opacity: 0.9;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 12px;
+      opacity: 0.5;
     }
   </style>
 </head>
-
 <body>
 
-<h1>⚡ ReflexZone</h1>
+  <div class="hero">
+    <div class="logo">⚡ Reaction Arena</div>
+    <div class="tagline">Test your reflexes. Compete worldwide. Become #1.</div>
+    
+    <button class="play-btn" onclick="location.href='index.html'">
+      ▶ Play Now
+    </button>
+  </div>
 
-<input id="username" placeholder="Username (optional)">
+  <div class="card">
+    <h3>🔥 Why people love it</h3>
+    <div class="feature">⚡ Insanely fast reaction game</div>
+    <div class="feature">🏆 Global leaderboard</div>
+    <div class="feature">😈 Funny rage messages</div>
+    <div class="feature">📱 Works on all devices</div>
+  </div>
 
-<div id="gameBox">Click to start</div>
-
-<div id="result"></div>
-
-<script>
-
-////////////////////////////////////////////////////
-// GAME STATE
-////////////////////////////////////////////////////
-let startTime = 0;
-let waiting = false;
-
-const box = document.getElementById("gameBox");
-
-////////////////////////////////////////////////////
-// CLICK GAME
-////////////////////////////////////////////////////
-box.addEventListener("click", () => {
-
-  if (!waiting) {
-
-    box.innerText = "Wait...";
-    box.style.background = "red";
-    waiting = true;
-
-    let delay = Math.random() * 3000 + 1500;
-
-    setTimeout(() => {
-      box.innerText = "CLICK!";
-      box.style.background = "green";
-      startTime = Date.now();
-    }, delay);
-
-  } else {
-
-    let time = Date.now() - startTime;
-
-    box.innerText = "Click to try again";
-    box.style.background = "red";
-    waiting = false;
-
-    showResult(time);
-  }
-});
-
-////////////////////////////////////////////////////
-// FUNNY MESSAGES
-////////////////////////////////////////////////////
-function getMessage(ms) {
-
-  if (ms < 120) return "⚡ NOT HUMAN!";
-  if (ms < 180) return "🔥 INSANE!";
-  if (ms < 250) return "😎 GOOD!";
-  if (ms < 350) return "🙂 AVERAGE";
-  return "🐌 Grandma faster than you 💀";
-}
-
-function showResult(ms) {
-  document.getElementById("result").innerHTML =
-    `⏱ ${ms} ms<br>${getMessage(ms)}`;
-}
-
-</script>
+  <footer>
+    Made for competitive players • Reaction Arena
+  </footer>
 
 </body>
 </html>
