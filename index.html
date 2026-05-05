@@ -1,122 +1,58 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>ReflexZone</title>
-
-  <!-- Supabase v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    body {
-      margin: 0;
-      background: #0f172a;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-    }
-
-    h1 {
-      margin-top: 20px;
-    }
-
-    #gameBox {
-      margin: 60px auto;
-      width: 300px;
-      height: 200px;
-      background: red;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 15px;
-      cursor: pointer;
-      font-size: 20px;
-      user-select: none;
-    }
-
-    input {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 6px;
-      border: none;
-    }
-
-    #leaderboard {
-      position: fixed;
-      right: 20px;
-      top: 20px;
-      background: #1e293b;
-      padding: 15px;
-      border-radius: 10px;
-      width: 240px;
-      text-align: left;
-    }
-
-    #result {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-
-<body>
-
-<h1>⚡ ReflexZone</h1>
-
-<input id="username" placeholder="Username">
-
-<div id="gameBox">Click to start</div>
-
-<div id="result"></div>
-
-<div id="leaderboard">
-  <h3>🏆 Leaderboard</h3>
-  <div id="scores">Loading...</div>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
 ////////////////////////////////////////////////////
-// 🔑 SUPABASE (PUT YOUR INFO HERE)
+// 🔑 SUPABASE INIT (SAFE GUARD)
 ////////////////////////////////////////////////////
-const SUPABASE_URL = "https://lishugsxdskcbciwzbia.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpc2h1Z3N4ZHNrY2JjaXd6YmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5OTI2MzEsImV4cCI6MjA5MzU2ODYzMX0.7rdwPZqj-l9wV4-5SmDvEcDNjiI_gTzcQE4QLO4tIcM";
+const SUPABASE_URL = "YOUR_URL_HERE";
+const SUPABASE_KEY = "YOUR_KEY_HERE";
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let supabaseClient;
+
+if (window.supabase && !window.__supabaseReady) {
+  window.__supabaseReady = true;
+
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+}
 
 ////////////////////////////////////////////////////
-// GAME STATE
+// 🎮 GAME STATE
 ////////////////////////////////////////////////////
-let startTime;
+let startTime = 0;
 let waiting = false;
 
 const box = document.getElementById("gameBox");
 
 ////////////////////////////////////////////////////
-// GAME LOOP
+// 🎮 CLICK GAME
 ////////////////////////////////////////////////////
 box.addEventListener("click", async () => {
-
   try {
 
     if (!waiting) {
-      box.style.background = "red";
-      box.innerText = "Wait...";
 
+      box.innerText = "Wait...";
+      box.style.background = "red";
       waiting = true;
 
+      let delay = Math.random() * 3000 + 1500;
+
       setTimeout(() => {
-        box.style.background = "green";
         box.innerText = "CLICK!";
+        box.style.background = "green";
         startTime = Date.now();
-      }, Math.random() * 3000 + 2000);
+      }, delay);
 
     } else {
 
       let time = Date.now() - startTime;
 
-      box.style.background = "red";
       box.innerText = "Click to try again";
+      box.style.background = "red";
       waiting = false;
 
       showResult(time);
@@ -130,88 +66,107 @@ box.addEventListener("click", async () => {
 });
 
 ////////////////////////////////////////////////////
-// RESULT TEXT
+// 🧠 RESULT TEXT
 ////////////////////////////////////////////////////
 function getMessage(ms) {
-  if (ms < 120) return "⚡ NOT HUMAN!";
-  if (ms < 180) return "🔥 Insane!";
-  if (ms < 250) return "😎 Good!";
-  if (ms < 350) return "🙂 Average";
-  return "🐌 Grandma faster than you 💀";
+  const messages = [
+    "⚡ NOT HUMAN!",
+    "🔥 INSANE!",
+    "😎 GOOD!",
+    "🙂 AVERAGE",
+    "🐌 GRANDMA FASTER 💀"
+  ];
+
+  if (ms < 120) return messages[0];
+  if (ms < 180) return messages[1];
+  if (ms < 250) return messages[2];
+  if (ms < 350) return messages[3];
+  return messages[4];
 }
 
 function showResult(ms) {
   document.getElementById("result").innerHTML =
-    `⏱ ${ms} ms<br>${getMessage(ms)}`;
+    `⏱ ${ms}ms<br>${getMessage(ms)}`;
 }
 
 ////////////////////////////////////////////////////
-// SAVE BEST SCORE ONLY
+// 🏆 SAVE BEST SCORE ONLY (SAFE)
 ////////////////////////////////////////////////////
 async function saveScore(time) {
+
+  if (!supabaseClient) return;
 
   if (time < 50) return;
 
   let name = document.getElementById("username").value || "Player";
 
-  let { data } = await supabaseClient
-    .from("leaderboard")
-    .select("*")
-    .eq("name", name)
-    .maybeSingle();
+  try {
 
-  if (!data) {
-    await supabaseClient.from("leaderboard").insert([
-      { name, time }
-    ]);
-  } else {
-    if (time < data.time) {
+    let { data } = await supabaseClient
+      .from("Leaderboard")
+      .select("*")
+      .eq("name", name)
+      .maybeSingle();
+
+    if (!data) {
+      await supabaseClient.from("Leaderboard").insert([
+        { name, time }
+      ]);
+    } else if (time < data.time) {
       await supabaseClient
-        .from("leaderboard")
+        .from("Leaderboard")
         .update({ time })
         .eq("name", name);
     }
-  }
 
-  loadLeaderboard();
+    loadLeaderboard();
+
+  } catch (e) {
+    console.log("DB error:", e);
+  }
 }
 
 ////////////////////////////////////////////////////
-// LOAD LEADERBOARD
+// 🏆 LOAD LEADERBOARD (SAFE)
 ////////////////////////////////////////////////////
 async function loadLeaderboard() {
 
-  const { data, error } = await supabaseClient
-    .from("leaderboard")
-    .select("*")
-    .order("time", { ascending: true })
-    .limit(10);
+  if (!supabaseClient) return;
 
-  if (error) {
-    document.getElementById("scores").innerHTML = "Error loading leaderboard";
-    console.log(error);
-    return;
+  try {
+
+    const { data, error } = await supabaseClient
+      .from("Leaderboard")
+      .select("*")
+      .order("time", { ascending: true })
+      .limit(10);
+
+    if (error) {
+      document.getElementById("scores").innerHTML = "Leaderboard error";
+      console.log(error);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      document.getElementById("scores").innerHTML = "No scores yet";
+      return;
+    }
+
+    let html = "";
+    let rank = 1;
+
+    data.forEach(p => {
+      html += `${rank}. ${p.name} — ${p.time}ms<br>`;
+      rank++;
+    });
+
+    document.getElementById("scores").innerHTML = html;
+
+  } catch (e) {
+    console.log("Load error:", e);
   }
-
-  if (!data) {
-    document.getElementById("scores").innerHTML = "No data yet";
-    return;
-  }
-
-  let html = "";
-  let rank = 1;
-
-  data.forEach(p => {
-    html += `${rank}. ${p.name} — ${p.time}ms<br>`;
-    rank++;
-  });
-
-  document.getElementById("scores").innerHTML = html;
 }
 
 loadLeaderboard();
 
 </script>
-
-</body>
-</html>
