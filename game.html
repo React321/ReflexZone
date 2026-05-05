@@ -2,6 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Reaction Arena</title>
 
   <style>
@@ -13,31 +15,29 @@
       text-align: center;
     }
 
-    h1 { margin-top: 20px; }
+    h1 {
+      margin-top: 20px;
+    }
 
     #gameBox {
-      margin: 60px auto 20px;
-      width: 300px;
-      height: 200px;
+      margin: 40px auto 20px;
+      width: 90%;
+      max-width: 320px;
+      height: 180px;
       background: red;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 15px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 18px;
       user-select: none;
     }
 
-    #result {
+    #result, #rank {
+      font-size: 16px;
       margin-top: 10px;
-      font-size: 18px;
-    }
-
-    #rank {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #38bdf8;
+      padding: 0 10px;
     }
 
     .back {
@@ -71,11 +71,22 @@
 
 <script>
 
+////////////////////////////////////////////////////
+// 🎮 GAME STATE
+////////////////////////////////////////////////////
 let startTime = 0;
 let waiting = false;
 
 const box = document.getElementById("gameBox");
 
+////////////////////////////////////////////////////
+// 🏆 LOCAL LEADERBOARD
+////////////////////////////////////////////////////
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+////////////////////////////////////////////////////
+// 🎮 GAME LOGIC
+////////////////////////////////////////////////////
 box.addEventListener("click", () => {
 
   if (!waiting) {
@@ -103,7 +114,7 @@ box.addEventListener("click", () => {
 });
 
 ////////////////////////////////////////////////////
-// ⚡ FUNNY TEXTS (RESTORED)
+// ⚡ FUNNY TEXTS
 ////////////////////////////////////////////////////
 function getMessage(ms) {
   if (ms < 120) return "⚡ NOT HUMAN!";
@@ -114,7 +125,7 @@ function getMessage(ms) {
 }
 
 ////////////////////////////////////////////////////
-// 🏆 RANK SYSTEM (RESTORED)
+// 🏆 RANK SYSTEM
 ////////////////////////////////////////////////////
 function getRank(ms) {
   if (ms < 120) return "👽 ALIEN";
@@ -125,12 +136,40 @@ function getRank(ms) {
   return "🐌 NOOB";
 }
 
+////////////////////////////////////////////////////
+// 📊 SHOW RESULT + SAVE SCORE
+////////////////////////////////////////////////////
 function showResult(ms) {
+
   document.getElementById("result").innerHTML =
     `⏱ ${ms} ms<br>${getMessage(ms)}`;
 
   document.getElementById("rank").innerHTML =
     `🏆 Rank: <b>${getRank(ms)}</b>`;
+
+  // 🏆 SAVE TO LOCAL LEADERBOARD
+  leaderboard.push(ms);
+  leaderboard.sort((a, b) => a - b);
+  leaderboard = leaderboard.slice(0, 5);
+
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+  showLeaderboard();
+}
+
+////////////////////////////////////////////////////
+// 🏆 SHOW LEADERBOARD
+////////////////////////////////////////////////////
+function showLeaderboard() {
+
+  let html = "🏆 Top Scores:<br><br>";
+
+  leaderboard.forEach((score, i) => {
+    html += `${i + 1}. ${score} ms<br>`;
+  });
+
+  document.getElementById("result").innerHTML +=
+    "<br><br>" + html;
 }
 
 </script>
