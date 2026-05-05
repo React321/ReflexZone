@@ -1,48 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>ReflexZone</title>
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     body {
-      background: #0f172a;
-      color: white;
       font-family: Arial;
+      background: #111;
+      color: white;
       text-align: center;
+      margin: 0;
     }
 
-    #gameBox {
-      margin: 100px auto;
-      width: 300px;
+    h1 {
+      margin-top: 30px;
+    }
+
+    #game {
+      width: 200px;
       height: 200px;
+      margin: 40px auto;
       background: red;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 15px;
       cursor: pointer;
-      font-size: 20px;
+      border-radius: 10px;
     }
 
-    #leaderboard {
+    /* RESULT BOX */
+    #resultBox {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 25px;
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 0 20px black;
+    }
+
+    #resultBox h2 {
+      margin: 10px 0;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* RANK PANEL */
+    #rankPanel {
       position: fixed;
       right: 20px;
       top: 20px;
-      background: #1e293b;
+      background: #1a1a1a;
       padding: 15px;
       border-radius: 10px;
-      width: 220px;
       text-align: left;
     }
 
-    input {
-      padding: 8px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: none;
+    #rankPanel h3 {
+      margin-top: 0;
     }
   </style>
 </head>
@@ -50,126 +74,119 @@
 <body>
 
 <h1>⚡ ReflexZone</h1>
+<p>Click when the box turns green</p>
 
-<input id="username" placeholder="Enter name">
+<div id="game"></div>
 
-<div id="gameBox">Click to start</div>
+<!-- RESULT BOX -->
+<div id="resultBox">
+  <h2 id="time"></h2>
+  <h3 id="rank"></h3>
+  <p id="message"></p>
+  <button onclick="startGame()">Try Again</button>
+</div>
 
-<div id="result"></div>
-
-<div id="leaderboard">
-  <h3>🏆 Global</h3>
-  <div id="scores">Loading...</div>
+<!-- RANK PANEL -->
+<div id="rankPanel">
+  <h3>Ranks</h3>
+  <p>🐌 Slow</p>
+  <p>⚡ Average</p>
+  <p>🔥 Fast</p>
+  <p>🚀 Alien</p>
 </div>
 
 <script>
-/* ================== SUPABASE ================== */
-const SUPABASE_URL = "lishugsxdskcbciwzbia.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxpc2h1Z3N4ZHNrY2JjaXd6YmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5OTI2MzEsImV4cCI6MjA5MzU2ODYzMX0.7rdwPZqj-l9wV4-5SmDvEcDNjiI_gTzcQE4QLO4tIcM";
+let startTime;
+let timeout;
+let game = document.getElementById("game");
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-/* ================== GAME ================== */
-let startTime, waiting = false;
+function startGame() {
+  document.getElementById("resultBox").style.display = "none";
+  game.style.background = "red";
 
-const box = document.getElementById("gameBox");
+  let delay = Math.random() * 3000 + 1000;
 
-box.addEventListener("click", async () => {
-  if (!waiting) {
-    box.style.background = "red";
-    box.innerText = "Wait...";
+  timeout = setTimeout(() => {
+    game.style.background = "green";
+    startTime = Date.now();
+  }, delay);
+}
 
-    let delay = Math.random() * 3000 + 2000;
-    waiting = true;
+game.onclick = function () {
 
-    setTimeout(() => {
-      box.style.background = "green";
-      box.innerText = "CLICK!";
-      startTime = Date.now();
-    }, delay);
+  if (game.style.background === "red") {
+    clearTimeout(timeout);
+    showResult("Too early 💀", "❌ Cheater", "Bro couldn’t wait 😭");
+    return;
+  }
+
+  let reaction = Date.now() - startTime;
+
+  let rank = "";
+  let message = "";
+
+  if (reaction >= 400) {
+    rank = "🐌 Slow";
+    message = getRandom([
+      "My grandma could’ve made tea and still beat you ☕💀",
+      "Bro reacted in 4 business days 📉",
+      "Even WiFi loading screens are faster",
+      "You clicked after the universe moved on 😭"
+    ]);
+
+  } else if (reaction >= 250) {
+    rank = "🐌 Slow";
+    message = getRandom([
+      "Not bad… but you’re not winning races 🐌",
+      "A bit too relaxed there 😴",
+      "You saw it… then thought about life",
+      "Warm-up fingers detected"
+    ]);
+
+  } else if (reaction >= 150) {
+    rank = "⚡ Average";
+    message = getRandom([
+      "Solid… but nothing special ⚡",
+      "Middle of the pack energy",
+      "You’re getting there",
+      "Decent reflexes for a human"
+    ]);
+
+  } else if (reaction >= 80) {
+    rank = "🔥 Fast";
+    message = getRandom([
+      "Okayyy speed demon 🔥",
+      "That was actually clean",
+      "Bro’s locked in 👀",
+      "Blink and you win energy"
+    ]);
 
   } else {
-    let time = Date.now() - startTime;
-
-    box.style.background = "red";
-    box.innerText = "Click to try again";
-    waiting = false;
-
-    showResult(time);
-    await handleScore(time);
+    rank = "🚀 Alien";
+    message = getRandom([
+      "ARE YOU A ROBOT?? 🤖",
+      "Nah this is illegal speed 💀",
+      "You saw the future",
+      "Reflexes from another universe 🚀"
+    ]);
   }
-});
 
-/* ================== FUNNY TEXT ================== */
-function getMessage(ms) {
-  if (ms < 120) return "⚡ Are you human?!";
-  if (ms < 180) return "🔥 Insane reflexes!";
-  if (ms < 250) return "😎 Pretty fast!";
-  if (ms < 350) return "🙂 Not bad!";
-  return "🐢 My grandma faster than you 💀";
+  showResult(reaction + " ms", rank, message);
+};
+
+function showResult(time, rank, message) {
+  document.getElementById("time").innerText = time;
+  document.getElementById("rank").innerText = rank;
+  document.getElementById("message").innerText = message;
+
+  document.getElementById("resultBox").style.display = "block";
 }
 
-/* ================== RESULT ================== */
-function showResult(ms) {
-  document.getElementById("result").innerHTML =
-    `⏱ ${ms} ms <br> ${getMessage(ms)}`;
-}
-
-/* ================== COUNTRY ================== */
-async function getCountry() {
-  try {
-    let res = await fetch("https://ipapi.co/json/");
-    let data = await res.json();
-    return data.country_code;
-  } catch {
-    return "US";
-  }
-}
-
-/* ================== FLAG ================== */
-function getFlag(code) {
-  return code
-    .toUpperCase()
-    .replace(/./g, c =>
-      String.fromCodePoint(127397 + c.charCodeAt())
-    );
-}
-
-/* ================== SUBMIT ================== */
-async function handleScore(time) {
-  if (time < 50) return; // anti-cheat
-
-  let name = document.getElementById("username").value || "Player";
-  let country = await getCountry();
-
-  await supabase.from("leaderboard").insert([
-    { name: name, time: time, country: country }
-  ]);
-
-  loadLeaderboard();
-}
-
-/* ================== LOAD LEADERBOARD ================== */
-async function loadLeaderboard() {
-  const { data } = await supabase
-    .from("leaderboard")
-    .select("*")
-    .order("time", { ascending: true })
-    .limit(10);
-
-  let html = "";
-  let rank = 1;
-
-  data.forEach(player => {
-    html += `${rank}. ${getFlag(player.country)} ${player.name} — ${player.time}ms<br>`;
-    rank++;
-  });
-
-  document.getElementById("scores").innerHTML = html;
-}
-
-loadLeaderboard();
-
+startGame();
 </script>
 
 </body>
