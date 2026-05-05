@@ -1,72 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>ReflexZone</title>
 
   <style>
     body {
-      font-family: Arial;
-      background: #111;
+      background: #0f172a;
       color: white;
+      font-family: Arial;
       text-align: center;
-      margin: 0;
     }
 
     h1 {
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
-    #game {
-      width: 200px;
+    #gameBox {
+      margin: 60px auto;
+      width: 300px;
       height: 200px;
-      margin: 40px auto;
       background: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
       cursor: pointer;
-      border-radius: 10px;
+      font-size: 20px;
+      user-select: none;
     }
 
-    /* RESULT BOX */
-    #resultBox {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      padding: 25px;
-      border-radius: 12px;
-      width: 320px;
-      box-shadow: 0 0 20px black;
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
     }
 
-    #resultBox h2 {
-      margin: 10px 0;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 10px;
-      width: 100%;
+    input {
+      padding: 8px;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    /* RANK PANEL */
-    #rankPanel {
-      position: fixed;
-      right: 20px;
-      top: 20px;
-      background: #1a1a1a;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: left;
-    }
-
-    #rankPanel h3 {
-      margin-top: 0;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -74,119 +46,71 @@
 <body>
 
 <h1>⚡ ReflexZone</h1>
-<p>Click when the box turns green</p>
 
-<div id="game"></div>
+<input id="username" placeholder="Username (optional)">
 
-<!-- RESULT BOX -->
-<div id="resultBox">
-  <h2 id="time"></h2>
-  <h3 id="rank"></h3>
-  <p id="message"></p>
-  <button onclick="startGame()">Try Again</button>
-</div>
+<div id="gameBox">Click to start</div>
 
-<!-- RANK PANEL -->
-<div id="rankPanel">
-  <h3>Ranks</h3>
-  <p>🐌 Slow</p>
-  <p>⚡ Average</p>
-  <p>🔥 Fast</p>
-  <p>🚀 Alien</p>
-</div>
+<div id="result"></div>
 
 <script>
-let startTime;
-let timeout;
-let game = document.getElementById("game");
 
-function getRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+////////////////////////////////////////////////////
+// GAME STATE
+////////////////////////////////////////////////////
+let startTime = 0;
+let waiting = false;
 
-function startGame() {
-  document.getElementById("resultBox").style.display = "none";
-  game.style.background = "red";
+const box = document.getElementById("gameBox");
 
-  let delay = Math.random() * 3000 + 1000;
+////////////////////////////////////////////////////
+// CLICK GAME
+////////////////////////////////////////////////////
+box.addEventListener("click", () => {
 
-  timeout = setTimeout(() => {
-    game.style.background = "green";
-    startTime = Date.now();
-  }, delay);
-}
+  if (!waiting) {
 
-game.onclick = function () {
+    box.innerText = "Wait...";
+    box.style.background = "red";
+    waiting = true;
 
-  if (game.style.background === "red") {
-    clearTimeout(timeout);
-    showResult("Too early 💀", "❌ Cheater", "Bro couldn’t wait 😭");
-    return;
-  }
+    let delay = Math.random() * 3000 + 1500;
 
-  let reaction = Date.now() - startTime;
-
-  let rank = "";
-  let message = "";
-
-  if (reaction >= 400) {
-    rank = "🐌 Slow";
-    message = getRandom([
-      "My grandma could’ve made tea and still beat you ☕💀",
-      "Bro reacted in 4 business days 📉",
-      "Even WiFi loading screens are faster",
-      "You clicked after the universe moved on 😭"
-    ]);
-
-  } else if (reaction >= 250) {
-    rank = "🐌 Slow";
-    message = getRandom([
-      "Not bad… but you’re not winning races 🐌",
-      "A bit too relaxed there 😴",
-      "You saw it… then thought about life",
-      "Warm-up fingers detected"
-    ]);
-
-  } else if (reaction >= 150) {
-    rank = "⚡ Average";
-    message = getRandom([
-      "Solid… but nothing special ⚡",
-      "Middle of the pack energy",
-      "You’re getting there",
-      "Decent reflexes for a human"
-    ]);
-
-  } else if (reaction >= 80) {
-    rank = "🔥 Fast";
-    message = getRandom([
-      "Okayyy speed demon 🔥",
-      "That was actually clean",
-      "Bro’s locked in 👀",
-      "Blink and you win energy"
-    ]);
+    setTimeout(() => {
+      box.innerText = "CLICK!";
+      box.style.background = "green";
+      startTime = Date.now();
+    }, delay);
 
   } else {
-    rank = "🚀 Alien";
-    message = getRandom([
-      "ARE YOU A ROBOT?? 🤖",
-      "Nah this is illegal speed 💀",
-      "You saw the future",
-      "Reflexes from another universe 🚀"
-    ]);
+
+    let time = Date.now() - startTime;
+
+    box.innerText = "Click to try again";
+    box.style.background = "red";
+    waiting = false;
+
+    showResult(time);
   }
+});
 
-  showResult(reaction + " ms", rank, message);
-};
+////////////////////////////////////////////////////
+// FUNNY MESSAGES
+////////////////////////////////////////////////////
+function getMessage(ms) {
 
-function showResult(time, rank, message) {
-  document.getElementById("time").innerText = time;
-  document.getElementById("rank").innerText = rank;
-  document.getElementById("message").innerText = message;
-
-  document.getElementById("resultBox").style.display = "block";
+  if (ms < 120) return "⚡ NOT HUMAN!";
+  if (ms < 180) return "🔥 INSANE!";
+  if (ms < 250) return "😎 GOOD!";
+  if (ms < 350) return "🙂 AVERAGE";
+  return "🐌 Grandma faster than you 💀";
 }
 
-startGame();
+function showResult(ms) {
+  document.getElementById("result").innerHTML =
+    `⏱ ${ms} ms<br>${getMessage(ms)}`;
+}
+
 </script>
 
 </body>
