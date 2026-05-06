@@ -3,77 +3,55 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- 🔥 FAVICON (put favicon.png in same folder as index.html) -->
+<link rel="icon" type="image/png" href="favicon.png" />
+
 <meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
+
 <title>ReflexZone</title>
+
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
-  overflow: hidden;
-  transition: 0.3s;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f0f0f;
+  color:white;
+  overflow:hidden;
 }
 
-body.neon { background:#050014; color:#00ffcc; }
-body.rainbow {
-  background: linear-gradient(45deg,#ff00cc,#3333ff,#00ffcc);
+body.neon{background:#050014;color:#00ffcc;}
+body.rainbow{
+  background:linear-gradient(45deg,#ff00cc,#3333ff,#00ffcc);
   background-size:400% 400%;
-  animation: move 6s infinite linear;
+  animation:move 6s infinite linear;
 }
-@keyframes move {
+
+@keyframes move{
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
 
-.screen {
-  display: none;
-  height: 100vh;
-  width: 100vw;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+.screen{
+  display:none;
+  height:100vh;
+  width:100vw;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
 }
-.active { display:flex; }
+.active{display:flex;}
 
-#home h1 { font-size:50px; margin-bottom:10px; }
-
-.creators {
-  font-weight:bold;
-  color:#00ffcc;
-  margin-bottom:10px;
-}
-
-.small-msgs {
-  font-size:14px;
-  opacity:0.8;
-  text-align:center;
-  max-width:420px;
-  margin-bottom:20px;
-}
-
-button {
+button{
   padding:10px 16px;
-  font-size:15px;
+  margin:5px;
   border:none;
   border-radius:8px;
   cursor:pointer;
-  margin:5px;
 }
 
-#playBtn{background:#00ffcc;}
-
-#topBar{
-  position:absolute;
-  top:10px;
-  left:10px;
-  font-size:16px;
-  font-weight:bold;
-  color:#00ffcc;
-}
-
-#gameBox {
+#gameBox{
   width:200px;
   height:200px;
   background:#222;
@@ -81,214 +59,162 @@ button {
   align-items:center;
   justify-content:center;
   border-radius:12px;
-  cursor:pointer;
   font-weight:bold;
-  text-align:center;
+  cursor:pointer;
+  user-select:none;
 }
 
-.rank {
-  margin-top:10px;
-  font-size:18px;
-  color:#ffcc00;
-}
-
-#leaderboard {
-  margin-top:10px;
-  font-size:14px;
+#topBar{
+  position:absolute;
+  top:10px;
+  left:10px;
   color:#00ffcc;
+  font-weight:bold;
 }
 
-.shop-item {
+.shop-item{
   background:#1a1a1a;
   padding:10px;
-  margin:6px;
+  margin:5px;
   border-radius:8px;
   cursor:pointer;
-  width:220px;
-  text-align:center;
 }
 
-#msgBox {
+#msgBox{
   position:absolute;
-  bottom:70px;
+  bottom:60px;
   left:50%;
   transform:translateX(-50%);
   background:#111;
-  padding:10px 18px;
+  padding:10px;
   border-radius:8px;
   display:none;
-  border:1px solid #00ffcc;
 }
 
-footer {
+#creators{
   position:absolute;
-  bottom:0;
-  width:100%;
-  background:#0a0a0a;
-  text-align:center;
-  padding:10px;
+  bottom:10px;
   font-size:12px;
-  color:#aaa;
+  opacity:0.6;
 }
-footer span{color:#00ffcc;font-weight:bold;}
 </style>
 </head>
+
 <body>
 
-<div id="topBar">💰 Coins: <span id="coinCount">0</span></div>
+<div id="topBar">💰 Coins: <span id="coins">0</span></div>
+<div id="creators">Creators: Abdurrahman & Abdul Aze</div>
 
+<!-- HOME -->
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
-  <div class="creators">Abdurrahman & Azeem</div>
-  <div class="small-msgs">
-    Test reaction speed.<br>
-    Unlock ranks: Slow → Normal → Fast → Alien.<br>
-    Compete with yourself.
-  </div>
-  <button id="playBtn" onclick="showScreen('game')">Play</button>
-  <button onclick="showScreen('shop')">Shop</button>
+  <button onclick="show('game')">Play</button>
+  <button onclick="show('shop')">Shop</button>
+  <button onclick="show('credits')">Credits</button>
 </div>
 
+<!-- GAME -->
 <div id="game" class="screen">
-  <div id="gameBox" onclick="clickBox()">TRY NOW</div>
-  <div class="rank" id="rank">Rank: -</div>
-  <div id="leaderboard">🏆 Best Times: none</div>
-  <button onclick="showScreen('home')">Back</button>
+  <div id="gameBox" onclick="play()">TRY NOW</div>
+  <p id="rank">Rank: -</p>
+  <p id="best">Best: none</p>
+  <button onclick="show('home')">Back</button>
 </div>
 
+<!-- SHOP -->
 <div id="shop" class="screen">
   <h2>Shop</h2>
-  <div class="shop-item" onclick="buyItem('Neon Theme',100,'neon')">Neon Theme - 100 coins</div>
-  <div class="shop-item" onclick="buyItem('Slow Motion Mode',200,'slow')">Slow Motion Mode - 200 coins</div>
-  <div class="shop-item" onclick="buyItem('Rainbow Theme',300,'rainbow')">Rainbow Theme - 300 coins</div>
-  <button onclick="showScreen('home')">Back</button>
+  <div class="shop-item" onclick="buy('neon',100)">Neon Theme - 100</div>
+  <div class="shop-item" onclick="buy('rainbow',200)">Rainbow Theme - 200</div>
+  <button onclick="show('home')">Back</button>
+</div>
+
+<!-- CREDITS -->
+<div id="credits" class="screen">
+  <h2>Credits</h2>
+  <p>Made by Abdurrahman & Abdul Aze</p>
+  <button onclick="show('home')">Back</button>
 </div>
 
 <div id="msgBox"></div>
 
-<footer>
-© 2026 ReflexZone | Abdurrahman & Azeem | 
-Inquiries: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
-</footer>
-
 <script>
-let startTime;
-let waiting=false;
-let coins = Number(localStorage.getItem("rz_coins")) || 0;
-let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
-let owned = JSON.parse(localStorage.getItem("rz_owned")) || [];
+let coins = Number(localStorage.getItem("coins")) || 0;
+let best = JSON.parse(localStorage.getItem("best")) || [];
+let owned = JSON.parse(localStorage.getItem("owned")) || [];
+let start = 0;
+let waiting = false;
 
-function updateCoins(){
-  document.getElementById("coinCount").innerText = coins;
-}
+const messages = {
+  alien:["not human 💀","BRO WHAT","AI???"],
+  fast:["fast af ⚡","clean","cracked"],
+  normal:["ok 👍","average","not bad"],
+  slow:["too slow 🐌","bro??","wake up"]
+};
 
-function saveAll(){
-  localStorage.setItem("rz_coins",coins);
-  localStorage.setItem("rz_best",JSON.stringify(bestTimes));
-  localStorage.setItem("rz_owned",JSON.stringify(owned));
-}
-
-function showScreen(id){
+function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// RANK MESSAGES (RESTORED)
-const alienMsgs=[
-"BRO WHAT?? this is not human...",
-"nahhh this is illegal speed 😭",
-"you just broke the system 💀",
-"AI? or human? impossible..."
-];
-const fastMsgs=[
-"INSANE speed, you're cracked ⚡",
-"bro you're actually fast now",
-"clean reaction time 👀",
-"that was sharp 🔥"
-];
-const normalMsgs=[
-"decent... 300ms is here",
-"average performance 👍",
-"not bad, not insane",
-"you can still improve"
-];
-const slowMsgs=[
-"nahh this is too slow 💀",
-"bro are you even awake?",
-"lag detected 🐌",
-"you reacted after it happened 😭"
-];
+function update(){
+  document.getElementById("coins").innerText = coins;
+  document.getElementById("best").innerText = best.length ? "Best: " + best[0] + "ms" : "Best: none";
+}
 
-function clickBox(){
+function play(){
   if(!waiting){
-    document.getElementById('gameBox').innerText="WAIT FOR GREEN...";
+    document.getElementById("gameBox").innerText="WAIT...";
     setTimeout(()=>{
-      document.getElementById('gameBox').style.background="green";
-      document.getElementById('gameBox').innerText="CLICK!";
-      startTime=Date.now();
-      waiting=true;
-    },Math.random()*3000+1000);
+      document.getElementById("gameBox").innerText="CLICK!";
+      document.getElementById("gameBox").style.background="green";
+      start = Date.now();
+      waiting = true;
+    }, Math.random()*3000+1000);
   } else {
-    let reaction=Date.now()-startTime;
-    waiting=false;
+    let r = Date.now() - start;
+    waiting = false;
 
-    document.getElementById('gameBox').style.background="#222";
-    document.getElementById('gameBox').innerText="TRY AGAIN";
+    document.getElementById("gameBox").innerText="TRY AGAIN";
+    document.getElementById("gameBox").style.background="#222";
 
-    let gain=Math.max(1,Math.floor(1000/reaction));
-    coins+=gain;
+    let type = r<200?"alien":r<250?"fast":r<450?"normal":"slow";
+    let msg = messages[type][Math.floor(Math.random()*messages[type].length)];
 
-    let rank="",msg="";
+    coins += Math.max(1, Math.floor(1000/r));
+    best.push(r);
+    best.sort((a,b)=>a-b);
 
-    if(reaction<200){rank="Alien 🚀";msg=alienMsgs[Math.floor(Math.random()*alienMsgs.length)]}
-    else if(reaction<250){rank="Fast ⚡";msg=fastMsgs[Math.floor(Math.random()*fastMsgs.length)]}
-    else if(reaction<450){rank="Normal 👍";msg=normalMsgs[Math.floor(Math.random()*normalMsgs.length)]}
-    else{rank="Slow 🐌";msg=slowMsgs[Math.floor(Math.random()*slowMsgs.length)]}
+    localStorage.setItem("coins",coins);
+    localStorage.setItem("best",JSON.stringify(best));
 
-    document.getElementById('rank').innerText=`Rank: ${rank} (${reaction}ms) - ${msg}`;
+    document.getElementById("rank").innerText = `Rank: ${type.toUpperCase()} (${r}ms) - ${msg}`;
 
-    bestTimes.push(reaction);
-    bestTimes.sort((a,b)=>a-b);
-    bestTimes=bestTimes.slice(0,10);
-
-    saveAll();
-    updateCoins();
-    updateLB();
-    showMsg("+"+gain+" coins");
+    update();
   }
 }
 
-function updateLB(){
-  document.getElementById("leaderboard").innerHTML = bestTimes.length?
-  "🏆 Best Times:<br>"+bestTimes.map(t=>t+"ms").join("<br>")
-  :"🏆 Best Times: none";
+function buy(item,cost){
+  if(coins < cost) return alert("Not enough coins!");
+
+  coins -= cost;
+  owned.push(item);
+
+  if(item === "neon") document.body.classList.add("neon");
+  if(item === "rainbow") document.body.classList.add("rainbow");
+
+  localStorage.setItem("coins",coins);
+  localStorage.setItem("owned",JSON.stringify(owned));
+
+  update();
 }
 
-function buyItem(name,cost,key){
-  if(owned.includes(key)) return showMsg("Already owned!");
-  if(coins<cost) return showMsg("Not enough coins!");
+// restore themes
+if(owned.includes("neon")) document.body.classList.add("neon");
+if(owned.includes("rainbow")) document.body.classList.add("rainbow");
 
-  coins-=cost;
-  owned.push(key);
-
-  document.body.classList.remove("neon","rainbow");
-  if(key=="neon") document.body.classList.add("neon");
-  if(key=="rainbow") document.body.classList.add("rainbow");
-
-  saveAll();
-  updateCoins();
-  showMsg(name+" unlocked!");
-}
-
-function showMsg(t){
-  let b=document.getElementById("msgBox");
-  b.style.display="block";
-  b.innerText=t;
-  setTimeout(()=>b.style.display="none",2000);
-}
-
-updateCoins();
-updateLB();
+update();
 </script>
+
 </body>
 </html>
