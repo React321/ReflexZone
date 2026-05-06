@@ -142,14 +142,23 @@ footer span{color:#00ffcc;font-weight:bold;}
 
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
+
   <div class="creators">Abdurrahman & Azeem</div>
+
   <div class="small-msgs">
     Test reaction speed.<br>
     Unlock ranks: Slow → Normal → Fast → Alien.<br>
-    Compete with yourself.
+    COMPETE WITH MODES 🔥
   </div>
+
   <button id="playBtn" onclick="showScreen('game')">Play</button>
   <button onclick="showScreen('shop')">Shop</button>
+
+  <!-- 🔥 NEW MODES -->
+  <button onclick="setMode('classic')">Classic</button>
+  <button onclick="setMode('time')">Time Attack</button>
+  <button onclick="setMode('streak')">Streak Mode</button>
+  <button onclick="setMode('precision')">Precision Mode</button>
 </div>
 
 <div id="game" class="screen">
@@ -170,16 +179,28 @@ footer span{color:#00ffcc;font-weight:bold;}
 <div id="msgBox"></div>
 
 <footer>
-© 2026 ReflexZone | Abdurrahman & Azeem | 
-Inquiries: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
+© 2026 ReflexZone | Abdurrahman & Azeem |
 </footer>
 
 <script>
 let startTime;
 let waiting=false;
+
 let coins = Number(localStorage.getItem("rz_coins")) || 0;
 let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
 let owned = JSON.parse(localStorage.getItem("rz_owned")) || [];
+
+let mode = "classic";
+let streak = 0;
+let timeLeft = 30;
+let timer = null;
+
+function setMode(m){
+  mode = m;
+  streak = 0;
+  timeLeft = 30;
+  showMsg("Mode: " + m.toUpperCase());
+}
 
 function updateCoins(){
   document.getElementById("coinCount").innerText = coins;
@@ -196,12 +217,13 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
 }
 
-const alienMsgs=["BRO WHAT?? this is not human...","you broke physics 💀"];
-const fastMsgs=["INSANE ⚡","clean reaction 👀"];
-const normalMsgs=["decent 👍","average"];
-const slowMsgs=["too slow 🐌","wake up"];
+const alienMsgs=["BRO WHAT?? this is not human..."];
+const fastMsgs=["INSANE ⚡"];
+const normalMsgs=["decent 👍"];
+const slowMsgs=["too slow 🐌"];
 
 function clickBox(){
+
   if(!waiting){
     document.getElementById('gameBox').innerText="WAIT FOR GREEN...";
     setTimeout(()=>{
@@ -209,29 +231,53 @@ function clickBox(){
       document.getElementById('gameBox').innerText="CLICK!";
       startTime=Date.now();
       waiting=true;
-    },Math.random()*3000+1000);
-  } else {
+    },Math.random()*2500+800);
+  }
+
+  else {
     let reaction=Date.now()-startTime;
     waiting=false;
 
     document.getElementById('gameBox').style.background="#222";
     document.getElementById('gameBox').innerText="TRY AGAIN";
 
-    let gain=Math.max(1,Math.floor(1000/reaction));
-    coins+=gain;
+    let gain=1;
 
-    let rank="",msg="";
+    // CLASSIC
+    if(mode==="classic"){
+      gain=Math.max(1,Math.floor(1000/reaction));
+      bestTimes.push(reaction);
+    }
 
-    if(reaction<200){rank="Alien 🚀";msg=alienMsgs[Math.floor(Math.random()*alienMsgs.length)]}
-    else if(reaction<250){rank="Fast ⚡";msg=fastMsgs[Math.floor(Math.random()*fastMsgs.length)]}
-    else if(reaction<450){rank="Normal 👍";msg=normalMsgs[Math.floor(Math.random()*normalMsgs.length)]}
-    else{rank="Slow 🐌";msg=slowMsgs[Math.floor(Math.random()*slowMsgs.length)]}
+    // STREAK
+    if(mode==="streak"){
+      if(reaction<300){
+        streak++;
+        gain = streak;
+      } else streak = 0;
+    }
 
-    document.getElementById('rank').innerText=`Rank: ${rank} (${reaction}ms) - ${msg}`;
+    // PRECISION
+    if(mode==="precision"){
+      if(reaction>=200 && reaction<=260){
+        gain = 10;
+        showMsg("PERFECT 🔥");
+      }
+    }
 
-    bestTimes.push(reaction);
+    coins += gain;
+
+    let rank =
+      reaction<200 ? "Alien 🚀"
+      : reaction<250 ? "Fast ⚡"
+      : reaction<450 ? "Normal 👍"
+      : "Slow 🐌";
+
+    document.getElementById('rank').innerText =
+      mode.toUpperCase() + " | " + rank + " ("+reaction+"ms)";
+
     bestTimes.sort((a,b)=>a-b);
-    bestTimes=bestTimes.slice(0,10);
+    bestTimes = bestTimes.slice(0,10);
 
     saveAll();
     updateCoins();
@@ -241,9 +287,10 @@ function clickBox(){
 }
 
 function updateLB(){
-  document.getElementById("leaderboard").innerHTML = bestTimes.length?
-  "🏆 Best Times:<br>"+bestTimes.map(t=>t+"ms").join("<br>")
-  :"🏆 Best Times: none";
+  document.getElementById("leaderboard").innerHTML =
+  bestTimes.length
+  ? "🏆 Best Times:<br>"+bestTimes.map(t=>t+"ms").join("<br>")
+  : "🏆 Best Times: none";
 }
 
 function buyItem(name,cost,key){
