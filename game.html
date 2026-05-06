@@ -1,177 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReflexZone Game</title>
 
-  <title>Reaction Arena</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  text-align: center;
+  background: black;
+  color: white;
+}
 
-  <style>
-    body {
-      margin: 0;
-      background: #0f172a;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-    }
+#gameBox {
+  width: 90%;
+  max-width: 400px;
+  height: 300px;
+  margin: 40px auto;
+  background: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+}
 
-    h1 {
-      margin-top: 20px;
-    }
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    #gameBox {
-      margin: 40px auto 20px;
-      width: 90%;
-      max-width: 320px;
-      height: 180px;
-      background: red;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 15px;
-      cursor: pointer;
-      font-size: 18px;
-      user-select: none;
-    }
-
-    #result, #rank {
-      font-size: 16px;
-      margin-top: 10px;
-      padding: 0 10px;
-    }
-
-    .back {
-      margin-top: 20px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      background: #1f2937;
-      color: white;
-    }
-
-    .back:hover {
-      background: #374151;
-    }
-  </style>
+#shop {
+  display: none;
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+</style>
 </head>
 
 <body>
 
-<h1>⚡ Reaction Arena</h1>
+<h1>⚡ ReflexZone</h1>
 
-<div id="gameBox">Click to start</div>
+<p id="rank">Rank: Beginner</p>
+<p id="coins">Coins: 0</p>
 
-<div id="result"></div>
-<div id="rank"></div>
+<div id="gameBox">Click to Start</div>
 
-<button class="back" onclick="window.location.href='index.html'">
-  ⬅ Back
-</button>
+<button onclick="toggleShop()">🛒 Shop</button>
+
+<div id="shop">
+  <h2>Shop</h2>
+  <button onclick="buyTheme('red',50)">🔴 Red Theme (50)</button><br>
+  <button onclick="buyTheme('green',50)">🟢 Green Theme (50)</button><br>
+  <button onclick="buyRank(100)">👑 Pro Rank (100)</button>
+</div>
 
 <script>
-
-////////////////////////////////////////////////////
-// 🎮 GAME STATE
-////////////////////////////////////////////////////
-let startTime = 0;
+let startTime;
 let waiting = false;
+
+let coins = localStorage.getItem("coins") || 0;
+let theme = localStorage.getItem("theme") || "green";
+let rank = localStorage.getItem("rank") || "Beginner";
+
+coins = parseInt(coins);
+
+updateUI();
 
 const box = document.getElementById("gameBox");
 
-////////////////////////////////////////////////////
-// 🏆 LOCAL LEADERBOARD
-////////////////////////////////////////////////////
-let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-
-////////////////////////////////////////////////////
-// 🎮 GAME LOGIC
-////////////////////////////////////////////////////
-box.addEventListener("click", () => {
-
+box.onclick = () => {
   if (!waiting) {
-
-    box.innerText = "Wait...";
     box.style.background = "red";
+    box.innerText = "Wait...";
     waiting = true;
 
+    let delay = Math.random() * 2000 + 1000;
+
     setTimeout(() => {
+      box.style.background = theme;
       box.innerText = "CLICK!";
-      box.style.background = "green";
       startTime = Date.now();
-    }, Math.random() * 3000 + 1500);
+    }, delay);
 
   } else {
+    let reaction = Date.now() - startTime;
 
-    let time = Date.now() - startTime;
+    if (!startTime) {
+      box.innerText = "Too Early!";
+      reset();
+      return;
+    }
 
-    box.innerText = "Click to try again";
-    box.style.background = "red";
-    waiting = false;
+    let earned = getCoins(reaction);
+    coins += earned;
 
-    showResult(time);
+    box.innerText = reaction + " ms (+ " + earned + " coins)";
+    save();
+
+    updateRank(reaction);
+    updateUI();
+
+    reset();
   }
-});
+};
 
-////////////////////////////////////////////////////
-// ⚡ FUNNY TEXTS
-////////////////////////////////////////////////////
-function getMessage(ms) {
-  if (ms < 120) return "⚡ NOT HUMAN!";
-  if (ms < 180) return "🔥 INSANE!";
-  if (ms < 250) return "😎 GOOD!";
-  if (ms < 350) return "🙂 AVERAGE!";
-  return "🐌 Grandma faster than you 💀";
+function reset() {
+  waiting = false;
+  startTime = null;
+
+  setTimeout(() => {
+    box.style.background = "green";
+    box.innerText = "Click to Start";
+  }, 1500);
 }
 
-////////////////////////////////////////////////////
-// 🏆 RANK SYSTEM
-////////////////////////////////////////////////////
-function getRank(ms) {
-  if (ms < 120) return "👽 ALIEN";
-  if (ms < 160) return "⚡ LEGEND";
-  if (ms < 200) return "🔥 PRO";
-  if (ms < 260) return "😎 SKILLED";
-  if (ms < 350) return "🙂 BRONZE";
-  return "🐌 NOOB";
+function getCoins(ms) {
+  if (ms < 200) return 10;
+  if (ms < 300) return 7;
+  if (ms < 400) return 5;
+  return 2;
 }
 
-////////////////////////////////////////////////////
-// 📊 SHOW RESULT + SAVE SCORE
-////////////////////////////////////////////////////
-function showResult(ms) {
+function updateRank(ms) {
+  if (ms < 200) rank = "GOD";
+  else if (ms < 300) rank = "Pro";
+  else if (ms < 400) rank = "Fast";
+  else rank = "Average";
 
-  document.getElementById("result").innerHTML =
-    `⏱ ${ms} ms<br>${getMessage(ms)}`;
-
-  document.getElementById("rank").innerHTML =
-    `🏆 Rank: <b>${getRank(ms)}</b>`;
-
-  // 🏆 SAVE TO LOCAL LEADERBOARD
-  leaderboard.push(ms);
-  leaderboard.sort((a, b) => a - b);
-  leaderboard = leaderboard.slice(0, 5);
-
-  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-
-  showLeaderboard();
+  save();
 }
 
-////////////////////////////////////////////////////
-// 🏆 SHOW LEADERBOARD
-////////////////////////////////////////////////////
-function showLeaderboard() {
-
-  let html = "🏆 Top Scores:<br><br>";
-
-  leaderboard.forEach((score, i) => {
-    html += `${i + 1}. ${score} ms<br>`;
-  });
-
-  document.getElementById("result").innerHTML +=
-    "<br><br>" + html;
+function updateUI() {
+  document.getElementById("coins").innerText = "Coins: " + coins;
+  document.getElementById("rank").innerText = "Rank: " + rank;
 }
 
+function save() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("theme", theme);
+  localStorage.setItem("rank", rank);
+}
+
+function toggleShop() {
+  let shop = document.getElementById("shop");
+  shop.style.display = shop.style.display === "none" ? "block" : "none";
+}
+
+function buyTheme(color, price) {
+  if (coins >= price) {
+    coins -= price;
+    theme = color;
+    save();
+    updateUI();
+    alert("Theme unlocked!");
+  } else {
+    alert("Not enough coins!");
+  }
+}
+
+function buyRank(price) {
+  if (coins >= price) {
+    coins -= price;
+    rank = "Pro 👑";
+    save();
+    updateUI();
+    alert("Rank upgraded!");
+  } else {
+    alert("Not enough coins!");
+  }
+}
 </script>
 
 </body>
