@@ -9,11 +9,12 @@
 body{
   margin:0;
   font-family:Arial;
-  background:#0f0f0f;
+  background: radial-gradient(circle at top, #1a1a2e, #0f0f0f);
   color:white;
   overflow:hidden;
 }
 
+/* SCREEN SYSTEM */
 .screen{
   display:none;
   height:100vh;
@@ -21,44 +22,77 @@ body{
   align-items:center;
   justify-content:center;
   flex-direction:column;
+  text-align:center;
+  padding:20px;
 }
+
 .active{display:flex;}
 
+/* BUTTONS */
 button{
-  padding:10px;
-  margin:5px;
+  padding:14px 18px;
+  margin:8px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
+  font-size:16px;
+  background:#00ffcc;
+  font-weight:bold;
+  transition:0.2s;
 }
 
+button:hover{
+  transform:scale(1.05);
+}
+
+/* GAME BOX */
 #gameBox{
-  width:200px;
-  height:200px;
+  width:220px;
+  height:220px;
   background:#222;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:12px;
+  border-radius:15px;
   cursor:pointer;
+  font-weight:bold;
+  font-size:18px;
+  transition:0.3s;
 }
 
 /* MEMORY */
 #memoryGrid{
   display:grid;
-  grid-template-columns:repeat(3,80px);
-  gap:10px;
-  margin-top:10px;
+  grid-template-columns:repeat(3,90px);
+  gap:12px;
+  margin-top:15px;
 }
 
 .memBox{
-  width:80px;
-  height:80px;
+  width:90px;
+  height:90px;
   background:#222;
-  border-radius:8px;
+  border-radius:10px;
+  transition:0.2s;
 }
 
-.memActive{background:#00ffcc;}
+.memActive{
+  background:#00ffcc;
+  box-shadow:0 0 10px #00ffcc;
+}
+
+/* TEXT */
+h1{
+  font-size:40px;
+}
+
+.panel{
+  background:#141414;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,255,204,0.1);
+  max-width:600px;
+}
 </style>
 </head>
 
@@ -66,45 +100,80 @@ button{
 
 <!-- HOME -->
 <div id="home" class="screen active">
-  <h1>ReflexZone</h1>
+  <div class="panel">
+    <h1>ReflexZone</h1>
+    <p>Reaction • Memory • Typing • Arcade</p>
 
-  <button onclick="show('game')">Reaction Game</button>
-  <button onclick="show('arcade')">Arcade 🎮</button>
+    <button onclick="show('game')">Reaction Game</button>
+    <button onclick="show('arcade')">Arcade 🎮</button>
+  </div>
 </div>
 
 <!-- REACTION -->
 <div id="game" class="screen">
-  <div id="gameBox" onclick="clickBox()">START</div>
-  <p id="rank"></p>
-  <button onclick="show('home')">Back</button>
+  <div class="panel">
+    <h2>⚡ Reaction Game</h2>
+    <div id="gameBox" onclick="clickBox()">START</div>
+    <p id="rank"></p>
+
+    <button style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;"
+            onclick="show('home')">
+      ⬅ Back to Home
+    </button>
+  </div>
 </div>
 
 <!-- ARCADE -->
 <div id="arcade" class="screen">
-  <h2>🎮 Arcade</h2>
+  <div class="panel">
+    <h2>🎮 Arcade Hub</h2>
 
-  <button onclick="openGame('reaction')">⚡ Reaction</button>
-  <button onclick="openGame('memory')">🧠 Memory</button>
-  <button onclick="openGame('typing')">⌨️ Typing</button>
+    <button onclick="openGame('reaction')">⚡ Reaction</button>
+    <button onclick="openGame('memory')">🧠 Memory</button>
+    <button onclick="openGame('typing')">⌨️ Typing</button>
 
-  <button onclick="show('home')">Back</button>
+    <br><br>
+
+    <button style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;"
+            onclick="show('home')">
+      ⬅ Back to Home
+    </button>
+  </div>
 </div>
 
 <!-- MEMORY -->
 <div id="memoryGame" class="screen">
-  <h2>🧠 Memory Game</h2>
-  <p id="memoryStatus"></p>
-  <div id="memoryGrid"></div>
-  <button onclick="startMemory()">Start</button>
+  <div class="panel">
+    <h2>🧠 Memory Game</h2>
+    <p id="memoryStatus">Watch the pattern</p>
+
+    <div id="memoryGrid"></div>
+
+    <button onclick="startMemory()">Start</button>
+
+    <button style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;"
+            onclick="show('arcade')">
+      ⬅ Back
+    </button>
+  </div>
 </div>
 
 <!-- TYPING -->
 <div id="typingGame" class="screen">
-  <h2>⌨️ Typing Game</h2>
-  <p id="sentence"></p>
-  <input id="typeInput" oninput="checkTyping()" />
-  <p id="typingResult"></p>
-  <button onclick="startTyping()">Start</button>
+  <div class="panel">
+    <h2>⌨️ Typing Challenge</h2>
+
+    <p id="sentence"></p>
+    <input id="typeInput" oninput="checkTyping()" style="padding:10px;width:90%;font-size:16px;" />
+    <p id="typingResult"></p>
+
+    <button onclick="startTyping()">New Text</button>
+
+    <button style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;"
+            onclick="show('arcade')">
+      ⬅ Back
+    </button>
+  </div>
 </div>
 
 <script>
@@ -115,18 +184,14 @@ function show(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* ARCADE ROUTER */
+/* ROUTER */
 function openGame(g){
   if(g==="reaction") show("game");
-  if(g==="memory"){
-    show("memoryGame");
-    setupMemory();
-  }
+  if(g==="memory"){ show("memoryGame"); setupMemory(); }
   if(g==="typing") show("typingGame");
 }
 
-/* ================= REACTION GAME ================= */
-
+/* ================= REACTION ================= */
 let startTime;
 let waiting=false;
 
@@ -134,11 +199,11 @@ function clickBox(){
   if(!waiting){
     document.getElementById("gameBox").innerText="WAIT...";
     setTimeout(()=>{
-      document.getElementById("gameBox").style.background="green";
+      document.getElementById("gameBox").style.background="#00ffcc";
       document.getElementById("gameBox").innerText="CLICK!";
       startTime=Date.now();
       waiting=true;
-    },Math.random()*2000+800);
+    },Math.random()*2000+1000);
   } else {
     let r=Date.now()-startTime;
     waiting=false;
@@ -150,8 +215,7 @@ function clickBox(){
   }
 }
 
-/* ================= MEMORY GAME ================= */
-
+/* ================= MEMORY ================= */
 let pattern=[], player=[], canPlay=false;
 
 function setupMemory(){
@@ -169,7 +233,7 @@ function setupMemory(){
 function startMemory(){
   pattern=[]; player=[]; canPlay=false;
 
-  for(let i=0;i<4;i++){
+  for(let i=0;i<5;i++){
     pattern.push(Math.floor(Math.random()*9));
   }
 
@@ -182,13 +246,13 @@ function startMemory(){
     if(i>=pattern.length){
       clearInterval(interval);
       canPlay=true;
-      document.getElementById("memoryStatus").innerText="Your turn";
+      document.getElementById("memoryStatus").innerText="Your turn!";
       return;
     }
 
     boxes[pattern[i]].classList.add("memActive");
     i++;
-  },500);
+  },450);
 }
 
 function press(i){
@@ -199,36 +263,39 @@ function press(i){
   if(player[player.length-1] !== pattern[player.length-1]){
     document.getElementById("memoryStatus").innerText="Wrong ❌";
     canPlay=false;
+  } else {
+    document.getElementById("memoryStatus").innerText="Good ✔";
   }
 }
 
-/* ================= TYPING GAME ================= */
+/* ================= TYPING (100+ WORD TEXTS) ================= */
 
 let sentence="";
-let startTyping;
+let startTypingTime;
+
+const texts=[
+"reflexzone is a fast reaction training game designed to improve your focus speed and typing ability under pressure it helps players build better reflexes and compete with friends while enjoying arcade style mini games that challenge the brain and hand coordination",
+"typing speed games are not just fun they also improve cognitive response time accuracy and concentration skills which are useful in gaming studying and real life communication tasks making them a powerful training tool for anyone who wants to get faster",
+"practice is the key to mastery and every time you repeat a challenge your brain becomes faster at processing information reflexzone is built to push your limits and help you become sharper in reaction memory and typing performance over time"
+];
 
 function startTyping(){
-  let list=[
-    "reflexzone is fun",
-    "fast reactions win games",
-    "practice makes perfect"
-  ];
-
-  sentence=list[Math.floor(Math.random()*list.length)];
+  sentence=texts[Math.floor(Math.random()*texts.length)];
   document.getElementById("sentence").innerText=sentence;
   document.getElementById("typeInput").value="";
   document.getElementById("typingResult").innerText="";
-  startTyping=Date.now();
+  startTypingTime=Date.now();
 }
 
 function checkTyping(){
   let v=document.getElementById("typeInput").value;
 
   if(v===sentence){
-    let t=(Date.now()-startTyping)/1000;
-    let wpm=Math.round(sentence.split(" ").length/t*60);
+    let t=(Date.now()-startTypingTime)/1000;
+    let wpm=Math.round((sentence.split(" ").length/t)*60);
 
-    document.getElementById("typingResult").innerText="WPM: "+wpm;
+    document.getElementById("typingResult").innerText=
+      "WPM: "+wpm+" 🔥";
   }
 }
 
