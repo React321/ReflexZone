@@ -6,7 +6,7 @@
 <title>ReflexZone</title>
 
 <style>
-body {
+body{
   margin:0;
   font-family:Arial;
   background:#0f0f0f;
@@ -27,8 +27,8 @@ body {
 button{
   padding:10px;
   margin:5px;
-  border-radius:8px;
   border:none;
+  border-radius:8px;
   cursor:pointer;
 }
 
@@ -40,8 +40,10 @@ button{
   align-items:center;
   justify-content:center;
   border-radius:12px;
+  cursor:pointer;
 }
 
+/* MEMORY */
 #memoryGrid{
   display:grid;
   grid-template-columns:repeat(3,80px);
@@ -65,11 +67,12 @@ button{
 <!-- HOME -->
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
-  <button onclick="show('game')">Reaction</button>
+
+  <button onclick="show('game')">Reaction Game</button>
   <button onclick="show('arcade')">Arcade 🎮</button>
 </div>
 
-<!-- REACTION GAME -->
+<!-- REACTION -->
 <div id="game" class="screen">
   <div id="gameBox" onclick="clickBox()">START</div>
   <p id="rank"></p>
@@ -78,27 +81,29 @@ button{
 
 <!-- ARCADE -->
 <div id="arcade" class="screen">
-  <h2>Arcade</h2>
-  <button onclick="openGame('memory')">Memory</button>
-  <button onclick="openGame('typing')">Typing</button>
-  <button onclick="openGame('reaction')">Reaction</button>
+  <h2>🎮 Arcade</h2>
+
+  <button onclick="openGame('reaction')">⚡ Reaction</button>
+  <button onclick="openGame('memory')">🧠 Memory</button>
+  <button onclick="openGame('typing')">⌨️ Typing</button>
+
   <button onclick="show('home')">Back</button>
 </div>
 
 <!-- MEMORY -->
-<div id="memory" class="screen">
-  <h2>Memory Game</h2>
-  <p id="memText"></p>
+<div id="memoryGame" class="screen">
+  <h2>🧠 Memory Game</h2>
+  <p id="memoryStatus"></p>
   <div id="memoryGrid"></div>
   <button onclick="startMemory()">Start</button>
 </div>
 
 <!-- TYPING -->
-<div id="typing" class="screen">
-  <h2>Typing Game</h2>
+<div id="typingGame" class="screen">
+  <h2>⌨️ Typing Game</h2>
   <p id="sentence"></p>
-  <input id="input" oninput="checkTyping()"/>
-  <p id="result"></p>
+  <input id="typeInput" oninput="checkTyping()" />
+  <p id="typingResult"></p>
   <button onclick="startTyping()">Start</button>
 </div>
 
@@ -110,17 +115,17 @@ function show(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* OPEN ARCADE GAMES */
+/* ARCADE ROUTER */
 function openGame(g){
+  if(g==="reaction") show("game");
   if(g==="memory"){
-    show("memory");
+    show("memoryGame");
     setupMemory();
   }
-  if(g==="typing") show("typing");
-  if(g==="reaction") show("game");
+  if(g==="typing") show("typingGame");
 }
 
-/* ================= REACTION ================= */
+/* ================= REACTION GAME ================= */
 
 let startTime;
 let waiting=false;
@@ -141,30 +146,28 @@ function clickBox(){
     document.getElementById("gameBox").style.background="#222";
     document.getElementById("gameBox").innerText="START";
 
-    document.getElementById("rank").innerText=r+" ms";
+    document.getElementById("rank").innerText="Reaction: "+r+"ms";
   }
 }
 
-/* ================= MEMORY ================= */
+/* ================= MEMORY GAME ================= */
 
 let pattern=[], player=[], canPlay=false;
 
 function setupMemory(){
-  let grid=document.getElementById("memoryGrid");
-  grid.innerHTML="";
+  let g=document.getElementById("memoryGrid");
+  if(g.innerHTML!=="") return;
 
   for(let i=0;i<9;i++){
     let d=document.createElement("div");
     d.className="memBox";
     d.onclick=()=>press(i);
-    grid.appendChild(d);
+    g.appendChild(d);
   }
 }
 
 function startMemory(){
-  pattern=[];
-  player=[];
-  canPlay=false;
+  pattern=[]; player=[]; canPlay=false;
 
   for(let i=0;i<4;i++){
     pattern.push(Math.floor(Math.random()*9));
@@ -179,7 +182,7 @@ function startMemory(){
     if(i>=pattern.length){
       clearInterval(interval);
       canPlay=true;
-      document.getElementById("memText").innerText="Your turn";
+      document.getElementById("memoryStatus").innerText="Your turn";
       return;
     }
 
@@ -194,30 +197,38 @@ function press(i){
   player.push(i);
 
   if(player[player.length-1] !== pattern[player.length-1]){
-    document.getElementById("memText").innerText="Wrong ❌";
+    document.getElementById("memoryStatus").innerText="Wrong ❌";
     canPlay=false;
   }
 }
 
-/* ================= TYPING ================= */
+/* ================= TYPING GAME ================= */
 
 let sentence="";
-let start;
+let startTyping;
 
 function startTyping(){
-  let list=["reflexzone is fun","fast reaction wins","practice daily"];
+  let list=[
+    "reflexzone is fun",
+    "fast reactions win games",
+    "practice makes perfect"
+  ];
+
   sentence=list[Math.floor(Math.random()*list.length)];
   document.getElementById("sentence").innerText=sentence;
-  document.getElementById("input").value="";
-  start=Date.now();
+  document.getElementById("typeInput").value="";
+  document.getElementById("typingResult").innerText="";
+  startTyping=Date.now();
 }
 
 function checkTyping(){
-  let v=document.getElementById("input").value;
+  let v=document.getElementById("typeInput").value;
+
   if(v===sentence){
-    let t=(Date.now()-start)/1000;
+    let t=(Date.now()-startTyping)/1000;
     let wpm=Math.round(sentence.split(" ").length/t*60);
-    document.getElementById("result").innerText="WPM: "+wpm;
+
+    document.getElementById("typingResult").innerText="WPM: "+wpm;
   }
 }
 
