@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
+<meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
 <title>ReflexZone</title>
 <style>
 body {
@@ -14,7 +14,6 @@ body {
   overflow: hidden;
 }
 
-/* Screens */
 .screen {
   display: none;
   height: 100vh;
@@ -25,7 +24,6 @@ body {
 }
 .active { display: flex; }
 
-/* Home */
 #home h1 {
   font-size: 50px;
   margin-bottom: 10px;
@@ -54,11 +52,8 @@ button {
   margin: 5px;
 }
 
-#playBtn {
-  background: #00ffcc;
-}
+#playBtn { background: #00ffcc; }
 
-/* Game */
 #gameBox {
   width: 200px;
   height: 200px;
@@ -79,7 +74,13 @@ button {
   text-align: center;
 }
 
-/* Shop */
+#leaderboard {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #00ffcc;
+  text-align: center;
+}
+
 .shop-item {
   background: #1a1a1a;
   padding: 10px;
@@ -90,7 +91,6 @@ button {
   text-align: center;
 }
 
-/* Message box */
 #msgBox {
   position: absolute;
   bottom: 70px;
@@ -103,7 +103,6 @@ button {
   border: 1px solid #00ffcc;
 }
 
-/* Footer */
 footer {
   position: absolute;
   bottom: 0;
@@ -116,66 +115,67 @@ footer {
   border-top: 1px solid #222;
 }
 
-footer span {
-  color: #00ffcc;
-  font-weight: bold;
-}
+footer span { color: #00ffcc; font-weight: bold; }
 </style>
 </head>
 <body>
 
-<!-- HOME -->
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
-
   <div class="creators">Abdurrahman & Azeem</div>
-
   <div class="small-msgs">
-    Test your reaction speed like a pro.<br>
+    Test reaction speed.<br>
     Unlock ranks: Slow → Normal → Fast → Alien.<br>
-    Earn coins and upgrade your experience.
+    Compete with yourself.
   </div>
-
   <button id="playBtn" onclick="showScreen('game')">Play</button>
   <button onclick="showScreen('shop')">Shop</button>
 </div>
 
-<!-- GAME -->
 <div id="game" class="screen">
   <div id="gameBox" onclick="clickBox()">WAIT...</div>
   <div class="rank" id="rank">Rank: -</div>
+  <div id="leaderboard">🏆 Best Times: none</div>
   <button onclick="showScreen('home')">Back</button>
 </div>
 
-<!-- SHOP -->
 <div id="shop" class="screen">
   <h2>Shop</h2>
-
   <div class="shop-item" onclick="buyItem('Neon Theme')">Neon Theme - 100 coins</div>
   <div class="shop-item" onclick="buyItem('Slow Motion Mode')">Slow Motion Mode - 200 coins</div>
   <div class="shop-item" onclick="buyItem('Rainbow Theme')">Rainbow Theme - 300 coins</div>
-
   <button onclick="showScreen('home')">Back</button>
 </div>
 
-<!-- MESSAGE BOX -->
 <div id="msgBox"></div>
 
-<!-- FOOTER -->
 <footer>
-  © 2026 ReflexZone | All Rights Reserved | 
-  Created by <span>Abdurrahman & Azeem</span> | 
-  Inquiries: <span>abdurrahmanomg15@gmail.com \| azzeem987@gmail.com</span>
+© 2026 ReflexZone | Abdurrahman & Azeem | 
+Inquiries: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
 </footer>
 
 <script>
 let startTime;
 let waiting = false;
 let coins = 0;
+let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+function updateLB(){
+  if(bestTimes.length === 0){
+    document.getElementById("leaderboard").innerHTML = "🏆 Best Times: none";
+    return;
+  }
+  document.getElementById("leaderboard").innerHTML = 
+    "🏆 Best Times:<br>" + bestTimes.slice(0,5).map(t => t + "ms").join("<br>");
+}
+
+function saveLB(){
+  localStorage.setItem("rz_best", JSON.stringify(bestTimes));
 }
 
 function clickBox(){
@@ -196,24 +196,26 @@ function clickBox(){
     let rank = "";
     let rankMsg = "";
 
-    if(reaction < 200){
-      rank = "Alien 🚀";
-      rankMsg = "Impossible reflex speed detected...";
-    } else if(reaction < 350){
-      rank = "Fast ⚡";
-      rankMsg = "Insane speed! You reacted like a pro.";
-    } else if(reaction < 600){
-      rank = "Normal 👍";
-      rankMsg = "Not bad, but you can improve.";
-    } else {
-      rank = "Slow 🐌";
-      rankMsg = "Too slow... focus and try again.";
-    }
+    const alienMsgs = ["BRO WHAT?? this is not human...","nahhh this is illegal speed 😭","you just broke the system 💀","AI? or human? impossible..."];
+    const fastMsgs = ["INSANE speed, you're cracked ⚡","bro you're actually fast now","clean reaction time 👀","that was sharp 🔥"];
+    const normalMsgs = ["decent... 300ms is here","average performance 👍","not bad, not insane","you can still improve"];
+    const slowMsgs = ["nahh this is too slow 💀","bro are you even awake?","lag detected 🐌","you reacted after it happened 😭"];
+
+    if(reaction < 200){ rank="Alien 🚀"; rankMsg=alienMsgs[Math.floor(Math.random()*alienMsgs.length)]; }
+    else if(reaction < 250){ rank="Fast ⚡"; rankMsg=fastMsgs[Math.floor(Math.random()*fastMsgs.length)]; }
+    else if(reaction < 450){ rank="Normal 👍"; rankMsg=normalMsgs[Math.floor(Math.random()*normalMsgs.length)]; }
+    else { rank="Slow 🐌"; rankMsg=slowMsgs[Math.floor(Math.random()*slowMsgs.length)]; }
 
     document.getElementById('rank').innerText = `Rank: ${rank} (${reaction}ms) - ${rankMsg}`;
 
     coins += Math.max(1, Math.floor(1000/reaction));
-    showMsg("Coins earned: +" + Math.floor(1000/reaction));
+    showMsg("Coins +" + Math.floor(1000/reaction));
+
+    bestTimes.push(reaction);
+    bestTimes.sort((a,b)=>a-b);
+    bestTimes = bestTimes.slice(0,10);
+    saveLB();
+    updateLB();
   }
 }
 
@@ -227,6 +229,8 @@ function showMsg(text){
   box.innerText = text;
   setTimeout(()=> box.style.display = "none", 2000);
 }
+
+updateLB();
 </script>
 
 </body>
