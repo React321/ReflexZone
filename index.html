@@ -56,7 +56,8 @@ button:hover{transform:scale(1.05);}
   border-radius:12px;
 }
 
-#box{
+/* FIXED BOXES (NO DUPLICATES NOW) */
+#box, #clickBox{
   width:220px;
   height:220px;
   background:#222;
@@ -126,8 +127,8 @@ button:hover{transform:scale(1.05);}
     <button onclick="openGame('memory')">🧠 Memory</button>
     <button onclick="openGame('typing')">⌨️ Typing</button>
 
-    <button onclick="openGame('click1')">⚡ 1s Clicker</button>
-    <button onclick="openGame('click5')">⚡ 5s Clicker</button>
+    <button onclick="openGame('click1')">⚡ 1s CPS</button>
+    <button onclick="openGame('click5')">⚡ 5s CPS</button>
 
     <button class="bigBack" onclick="show('home')">⬅ Back</button>
   </div>
@@ -160,15 +161,16 @@ button:hover{transform:scale(1.05);}
   </div>
 </div>
 
-<!-- CLICKER -->
+<!-- CPS CLICKER -->
 <div id="clickGame" class="screen">
   <div class="panel">
-    <h2 id="clickTitle">Clicker</h2>
+    <h2 id="clickTitle">CPS Challenge</h2>
 
-    <div id="clickBox" onclick="runClicker()">START</div>
-    <p id="clickResult"></p>
+    <div id="clickBox" onclick="countClick()">CLICK FAST!</div>
 
-    <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
+    <p id="clickInfo"></p>
+
+    <button onclick="show('arcade')" class="bigBack">⬅ Back</button>
   </div>
 </div>
 
@@ -180,49 +182,61 @@ function show(id){
 }
 
 /* ROUTER */
-let clickMode="";
-let clickStart;
+let mode="";
+let cpsClicks=0;
+let cpsTime=0;
+let cpsRunning=false;
+let cpsTimer;
 
-/* FIXED NAVIGATION */
+/* OPEN GAMES */
 function openGame(g){
   if(g==="reaction") show("game");
   if(g==="memory"){ show("memoryGame"); setupMemory(); }
   if(g==="typing") show("typingGame");
 
-  if(g==="click1"){ clickMode="1"; startClicker(); }
-  if(g==="click5"){ clickMode="5"; startClicker(); }
+  if(g==="click1") startCPS(1);
+  if(g==="click5") startCPS(5);
 }
 
-/* CLICKER */
-function startClicker(){
+/* ================= CPS CLICKER (NEW FIXED SYSTEM) ================= */
+
+function startCPS(sec){
   show("clickGame");
 
+  mode = sec;
+  cpsClicks = 0;
+  cpsRunning = true;
+
   document.getElementById("clickTitle").innerText =
-    clickMode==="1" ? "⚡ 1 SECOND CLICKER" : "⚡ 5 SECOND CLICKER";
+    sec + " SECOND CPS CHALLENGE";
 
-  let box=document.getElementById("clickBox");
-  box.innerText="WAIT...";
-  box.style.background="#222";
+  document.getElementById("clickInfo").innerText =
+    "Click as FAST as possible!";
 
-  setTimeout(()=>{
-    clickStart=Date.now();
-    box.innerText="CLICK!";
-    box.style.background="#00ffcc";
-  },1000);
+  document.getElementById("clickBox").innerText = "START CLICKING!";
+  document.getElementById("clickBox").style.background = "#00ffcc";
+
+  cpsTimer = setTimeout(()=>{
+    cpsRunning = false;
+
+    let cps = (cpsClicks / sec).toFixed(2);
+
+    document.getElementById("clickBox").style.background = "#222";
+    document.getElementById("clickBox").innerText = "DONE";
+
+    document.getElementById("clickInfo").innerText =
+      "Clicks: " + cpsClicks + " | CPS: " + cps;
+
+  }, sec * 1000);
 }
 
-function runClicker(){
-  let t=Date.now()-clickStart;
-  let limit=clickMode==="1"?1000:5000;
-
-  document.getElementById("clickResult").innerText=
-    "Time: "+t+"ms | off by "+Math.abs(limit-t)+"ms";
-
-  document.getElementById("clickBox").style.background="#222";
-  document.getElementById("clickBox").innerText="START";
+function countClick(){
+  if(!cpsRunning) return;
+  cpsClicks++;
 }
 
-/* REACTION */
+/* ================= REACTION ================= */
+
 let startTime;
 let waiting=false;
 
@@ -246,7 +260,8 @@ function clickBox(){
   }
 }
 
-/* MEMORY */
+/* ================= MEMORY ================= */
+
 let pattern=[], player=[], canPlay=false;
 
 function setupMemory(){
@@ -256,13 +271,13 @@ function setupMemory(){
   for(let i=0;i<9;i++){
     let d=document.createElement("div");
     d.className="memBox";
-    d.onclick=()=>press(i);
+    d.onclick=()=>player.push(i);
     g.appendChild(d);
   }
 }
 
 function startMemory(){
-  pattern=[]; player=[]; canPlay=false;
+  pattern=[]; player=[];
 
   for(let i=0;i<5;i++){
     pattern.push(Math.floor(Math.random()*9));
@@ -276,8 +291,6 @@ function startMemory(){
 
     if(i>=pattern.length){
       clearInterval(interval);
-      canPlay=true;
-      document.getElementById("memoryStatus").innerText="Your turn!";
       return;
     }
 
@@ -286,24 +299,18 @@ function startMemory(){
   },450);
 }
 
-function press(i){
-  if(!canPlay) return;
-  player.push(i);
-}
+/* ================= TYPING ================= */
 
-/* TYPING (MORE SHORT SENTENCES) */
 const texts=[
 "reflexzone trains your brain fast",
 "speed matters in games",
 "focus improves reaction time",
 "practice makes you better",
 "fast hands win fights",
-"train daily to improve",
 "reaction speed is skill",
 "typing speed is power",
 "stay sharp stay fast",
-"never miss the timing",
-"brain speed is everything",
+"never miss timing",
 "small focus big results"
 ];
 
