@@ -3,52 +3,36 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
 <title>ReflexZone</title>
 
 <style>
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
-  overflow: hidden;
-  transition: 0.3s;
+  margin:0;
+  font-family:Arial;
+  background:#0f0f0f;
+  color:white;
+  overflow:hidden;
 }
 
-body.neon { background:#050014; color:#00ffcc; }
-body.rainbow {
-  background: linear-gradient(45deg,#ff00cc,#3333ff,#00ffcc);
-  background-size:400% 400%;
-  animation: move 6s infinite linear;
+.screen{
+  display:none;
+  height:100vh;
+  width:100vw;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
 }
+.active{display:flex;}
 
-@keyframes move {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
-.screen {
-  display: none;
-  height: 100vh;
-  width: 100vw;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.active { display:flex; }
-
-button {
-  padding:10px 16px;
-  font-size:15px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+button{
+  padding:10px;
   margin:5px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
 }
 
-#gameBox {
+#gameBox{
   width:200px;
   height:200px;
   background:#222;
@@ -56,113 +40,90 @@ button {
   align-items:center;
   justify-content:center;
   border-radius:12px;
-  cursor:pointer;
-  font-weight:bold;
-  text-align:center;
 }
 
-.rank { margin-top:10px; font-size:18px; color:#ffcc00; }
-
-#topBar{
-  position:absolute;
-  top:10px;
-  left:10px;
-  color:#00ffcc;
-  font-weight:bold;
-}
-
-/* MEMORY */
 #memoryGrid{
   display:grid;
   grid-template-columns:repeat(3,80px);
   gap:10px;
-  margin-top:15px;
+  margin-top:10px;
 }
+
 .memBox{
   width:80px;
   height:80px;
   background:#222;
-  border-radius:10px;
+  border-radius:8px;
 }
-.memActive{ background:#00ffcc !important; }
 
-/* TYPING */
-#typeInput{
-  padding:10px;
-  margin-top:10px;
-  width:250px;
-}
+.memActive{background:#00ffcc;}
 </style>
 </head>
 
 <body>
 
-<div id="topBar">💰 Coins: <span id="coinCount">0</span></div>
-
 <!-- HOME -->
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
-
-  <button onclick="showScreen('game')">Play</button>
-  <button onclick="showScreen('shop')">Shop</button>
-
-  <button onclick="showScreen('arcade')">Arcade 🎮</button>
+  <button onclick="show('game')">Reaction</button>
+  <button onclick="show('arcade')">Arcade 🎮</button>
 </div>
 
-<!-- GAME -->
+<!-- REACTION GAME -->
 <div id="game" class="screen">
-  <div id="gameBox" onclick="clickBox()">TRY NOW</div>
-  <div class="rank" id="rank">Rank: -</div>
-  <button onclick="showScreen('home')">Back</button>
+  <div id="gameBox" onclick="clickBox()">START</div>
+  <p id="rank"></p>
+  <button onclick="show('home')">Back</button>
 </div>
 
 <!-- ARCADE -->
 <div id="arcade" class="screen">
-  <h2>🎮 ReflexZone Arcade</h2>
-
-  <button onclick="openGame('reaction')">⚡ Reaction</button>
-  <button onclick="openGame('memory')">🧠 Memory</button>
-  <button onclick="openGame('typing')">⌨️ Typing</button>
-
-  <br><br>
-  <button onclick="showScreen('home')">Back</button>
+  <h2>Arcade</h2>
+  <button onclick="openGame('memory')">Memory</button>
+  <button onclick="openGame('typing')">Typing</button>
+  <button onclick="openGame('reaction')">Reaction</button>
+  <button onclick="show('home')">Back</button>
 </div>
 
 <!-- MEMORY -->
-<div id="memoryGame" class="screen">
-  <h2>🧠 Memory Game</h2>
-  <p id="memoryStatus">Start game</p>
+<div id="memory" class="screen">
+  <h2>Memory Game</h2>
+  <p id="memText"></p>
   <div id="memoryGrid"></div>
   <button onclick="startMemory()">Start</button>
 </div>
 
 <!-- TYPING -->
-<div id="typingGame" class="screen">
-  <h2>⌨️ Typing Game</h2>
+<div id="typing" class="screen">
+  <h2>Typing Game</h2>
   <p id="sentence"></p>
-  <input id="typeInput" oninput="checkTyping()" />
-  <p id="typingResult"></p>
+  <input id="input" oninput="checkTyping()"/>
+  <p id="result"></p>
   <button onclick="startTyping()">Start</button>
 </div>
 
 <script>
 
-/* ================= CORE ================= */
+/* SCREEN SYSTEM */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
 
-let coins = 0;
+/* OPEN ARCADE GAMES */
+function openGame(g){
+  if(g==="memory"){
+    show("memory");
+    setupMemory();
+  }
+  if(g==="typing") show("typing");
+  if(g==="reaction") show("game");
+}
+
+/* ================= REACTION ================= */
+
 let startTime;
 let waiting=false;
-
-function updateCoins(){
-  document.getElementById("coinCount").innerText = coins;
-}
-
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-/* ================= GAME ================= */
 
 function clickBox(){
   if(!waiting){
@@ -174,43 +135,29 @@ function clickBox(){
       waiting=true;
     },Math.random()*2000+800);
   } else {
-    let r = Date.now()-startTime;
+    let r=Date.now()-startTime;
     waiting=false;
 
     document.getElementById("gameBox").style.background="#222";
-    document.getElementById("gameBox").innerText="TRY AGAIN";
+    document.getElementById("gameBox").innerText="START";
 
-    coins += Math.max(1,Math.floor(1000/r));
-
-    document.getElementById("rank").innerText = "Reaction: "+r+"ms";
-
-    updateCoins();
+    document.getElementById("rank").innerText=r+" ms";
   }
 }
 
-/* ================= ARCADE ================= */
-
-function openGame(g){
-  if(g==="reaction") showScreen("game");
-  if(g==="memory"){
-    showScreen("memoryGame");
-    setupMemory();
-  }
-  if(g==="typing") showScreen("typingGame");
-}
-
-/* ================= MEMORY GAME ================= */
+/* ================= MEMORY ================= */
 
 let pattern=[], player=[], canPlay=false;
 
 function setupMemory(){
-  let g=document.getElementById("memoryGrid");
-  g.innerHTML="";
+  let grid=document.getElementById("memoryGrid");
+  grid.innerHTML="";
+
   for(let i=0;i<9;i++){
     let d=document.createElement("div");
     d.className="memBox";
     d.onclick=()=>press(i);
-    g.appendChild(d);
+    grid.appendChild(d);
   }
 }
 
@@ -232,6 +179,7 @@ function startMemory(){
     if(i>=pattern.length){
       clearInterval(interval);
       canPlay=true;
+      document.getElementById("memText").innerText="Your turn";
       return;
     }
 
@@ -242,41 +190,36 @@ function startMemory(){
 
 function press(i){
   if(!canPlay) return;
+
   player.push(i);
 
   if(player[player.length-1] !== pattern[player.length-1]){
-    alert("Wrong ❌");
+    document.getElementById("memText").innerText="Wrong ❌";
     canPlay=false;
   }
 }
 
 /* ================= TYPING ================= */
 
-let sentence="", startTyping;
-
-const sentences=[
-  "reflexzone is fun",
-  "fast reactions win games",
-  "practice makes perfect"
-];
+let sentence="";
+let start;
 
 function startTyping(){
-  sentence = sentences[Math.floor(Math.random()*sentences.length)];
+  let list=["reflexzone is fun","fast reaction wins","practice daily"];
+  sentence=list[Math.floor(Math.random()*list.length)];
   document.getElementById("sentence").innerText=sentence;
-  document.getElementById("typeInput").value="";
-  startTyping=Date.now();
+  document.getElementById("input").value="";
+  start=Date.now();
 }
 
 function checkTyping(){
-  let v=document.getElementById("typeInput").value;
+  let v=document.getElementById("input").value;
   if(v===sentence){
-    let time=(Date.now()-startTyping)/1000;
-    let wpm=Math.round(sentence.split(" ").length/time*60);
-    document.getElementById("typingResult").innerText="WPM: "+wpm;
+    let t=(Date.now()-start)/1000;
+    let wpm=Math.round(sentence.split(" ").length/t*60);
+    document.getElementById("result").innerText="WPM: "+wpm;
   }
 }
-
-updateCoins();
 
 </script>
 
