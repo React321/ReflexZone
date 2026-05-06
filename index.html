@@ -14,7 +14,6 @@ body{
   overflow:hidden;
 }
 
-/* SCREEN SYSTEM */
 .screen{
   display:none;
   height:100vh;
@@ -25,10 +24,8 @@ body{
   text-align:center;
   padding:20px;
 }
-
 .active{display:flex;}
 
-/* BUTTONS */
 button{
   padding:14px 18px;
   margin:8px;
@@ -40,13 +37,26 @@ button{
   font-weight:bold;
   transition:0.2s;
 }
+button:hover{transform:scale(1.05);}
 
-button:hover{
-  transform:scale(1.05);
+.panel{
+  background:#141414;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,255,204,0.1);
+  max-width:650px;
+  width:90%;
 }
 
-/* GAME BOX */
-#gameBox{
+.bigBack{
+  background:#ff5555;
+  color:white;
+  font-size:18px;
+  padding:16px 26px;
+  border-radius:12px;
+}
+
+#box{
   width:220px;
   height:220px;
   background:#222;
@@ -57,6 +67,7 @@ button:hover{
   cursor:pointer;
   font-weight:bold;
   font-size:18px;
+  margin:auto;
 }
 
 /* MEMORY */
@@ -65,6 +76,7 @@ button:hover{
   grid-template-columns:repeat(3,90px);
   gap:12px;
   margin-top:15px;
+  justify-content:center;
 }
 
 .memBox{
@@ -72,22 +84,11 @@ button:hover{
   height:90px;
   background:#222;
   border-radius:10px;
-  transition:0.2s;
 }
 
 .memActive{
   background:#00ffcc;
   box-shadow:0 0 10px #00ffcc;
-}
-
-h1{font-size:40px;}
-
-.panel{
-  background:#141414;
-  padding:20px;
-  border-radius:15px;
-  box-shadow:0 0 20px rgba(0,255,204,0.1);
-  max-width:600px;
 }
 </style>
 </head>
@@ -109,13 +110,10 @@ h1{font-size:40px;}
 <div id="game" class="screen">
   <div class="panel">
     <h2>⚡ Reaction Game</h2>
-    <div id="gameBox" onclick="clickBox()">START</div>
+    <div id="box" onclick="clickBox()">START</div>
     <p id="rank"></p>
 
-    <button onclick="show('home')"
-      style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;">
-      ⬅ Back to Home
-    </button>
+    <button class="bigBack" onclick="show('home')">⬅ Back</button>
   </div>
 </div>
 
@@ -128,18 +126,10 @@ h1{font-size:40px;}
     <button onclick="openGame('memory')">🧠 Memory</button>
     <button onclick="openGame('typing')">⌨️ Typing</button>
 
-    <hr style="margin:10px 0;opacity:0.2">
+    <button onclick="openGame('click1')">⚡ 1s Clicker</button>
+    <button onclick="openGame('click5')">⚡ 5s Clicker</button>
 
-    <!-- 🔥 NEW CLICKER MODES -->
-    <button onclick="openGame('click1')">⚡ 1 Second Clicker</button>
-    <button onclick="openGame('click5')">⚡ 5 Second Clicker</button>
-
-    <br><br>
-
-    <button onclick="show('home')"
-      style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;">
-      ⬅ Back to Home
-    </button>
+    <button class="bigBack" onclick="show('home')">⬅ Back</button>
   </div>
 </div>
 
@@ -147,115 +137,101 @@ h1{font-size:40px;}
 <div id="memoryGame" class="screen">
   <div class="panel">
     <h2>🧠 Memory Game</h2>
-    <p id="memoryStatus">Watch the pattern</p>
+    <p id="memoryStatus">Watch pattern</p>
 
     <div id="memoryGrid"></div>
 
     <button onclick="startMemory()">Start</button>
-
-    <button onclick="show('arcade')"
-      style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;">
-      ⬅ Back
-    </button>
+    <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
   </div>
 </div>
 
 <!-- TYPING -->
 <div id="typingGame" class="screen">
   <div class="panel">
-    <h2>⌨️ Typing Challenge</h2>
+    <h2>⌨️ Typing Game</h2>
 
     <p id="sentence"></p>
     <input id="typeInput" oninput="checkTyping()" style="padding:10px;width:90%;font-size:16px;" />
     <p id="typingResult"></p>
 
     <button onclick="startTyping()">New Text</button>
-
-    <button onclick="show('arcade')"
-      style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;">
-      ⬅ Back
-    </button>
+    <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
   </div>
 </div>
 
-<!-- CLICKER GAME -->
+<!-- CLICKER -->
 <div id="clickGame" class="screen">
   <div class="panel">
-    <h2 id="clickTitle">⚡ Clicker</h2>
-    <div id="gameBox" onclick="runClicker()">START</div>
+    <h2 id="clickTitle">Clicker</h2>
+
+    <div id="clickBox" onclick="runClicker()">START</div>
     <p id="clickResult"></p>
 
-    <button onclick="show('arcade')"
-      style="background:#ff5555;color:white;font-size:18px;padding:16px 22px;">
-      ⬅ Back
-    </button>
+    <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
   </div>
 </div>
 
 <script>
 
-/* SCREEN SYSTEM */
 function show(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
 /* ROUTER */
-let clickMode = "";
+let clickMode="";
+let clickStart;
 
+/* FIXED NAVIGATION */
 function openGame(g){
   if(g==="reaction") show("game");
   if(g==="memory"){ show("memoryGame"); setupMemory(); }
   if(g==="typing") show("typingGame");
 
-  if(g==="click1"){ clickMode="1s"; startClicker(); }
-  if(g==="click5"){ clickMode="5s"; startClicker(); }
+  if(g==="click1"){ clickMode="1"; startClicker(); }
+  if(g==="click5"){ clickMode="5"; startClicker(); }
 }
 
-/* ================= CLICKER ================= */
-
-let clickStart;
-
+/* CLICKER */
 function startClicker(){
   show("clickGame");
-  document.getElementById("clickTitle").innerText =
-    clickMode==="1s" ? "⚡ 1 SECOND CLICKER" : "⚡ 5 SECOND CLICKER";
 
-  document.getElementById("clickResult").innerText="";
-  document.getElementById("gameBox").innerText="WAIT...";
-  document.getElementById("gameBox").style.background="#222";
+  document.getElementById("clickTitle").innerText =
+    clickMode==="1" ? "⚡ 1 SECOND CLICKER" : "⚡ 5 SECOND CLICKER";
+
+  let box=document.getElementById("clickBox");
+  box.innerText="WAIT...";
+  box.style.background="#222";
 
   setTimeout(()=>{
-    clickStart = Date.now();
-    document.getElementById("gameBox").innerText="CLICK!";
-    document.getElementById("gameBox").style.background="#00ffcc";
+    clickStart=Date.now();
+    box.innerText="CLICK!";
+    box.style.background="#00ffcc";
   },1000);
 }
 
 function runClicker(){
-  let t = Date.now() - clickStart;
+  let t=Date.now()-clickStart;
+  let limit=clickMode==="1"?1000:5000;
 
-  let limit = clickMode==="1s" ? 1000 : 5000;
+  document.getElementById("clickResult").innerText=
+    "Time: "+t+"ms | off by "+Math.abs(limit-t)+"ms";
 
-  let diff = Math.abs(limit - t);
-
-  document.getElementById("gameBox").style.background="#222";
-  document.getElementById("gameBox").innerText="START";
-
-  document.getElementById("clickResult").innerText =
-    "Your time: "+t+"ms | off by "+diff+"ms";
+  document.getElementById("clickBox").style.background="#222";
+  document.getElementById("clickBox").innerText="START";
 }
 
-/* ================= REACTION ================= */
+/* REACTION */
 let startTime;
 let waiting=false;
 
 function clickBox(){
   if(!waiting){
-    document.getElementById("gameBox").innerText="WAIT...";
+    document.getElementById("box").innerText="WAIT...";
     setTimeout(()=>{
-      document.getElementById("gameBox").style.background="#00ffcc";
-      document.getElementById("gameBox").innerText="CLICK!";
+      document.getElementById("box").style.background="#00ffcc";
+      document.getElementById("box").innerText="CLICK!";
       startTime=Date.now();
       waiting=true;
     },Math.random()*2000+1000);
@@ -263,8 +239,8 @@ function clickBox(){
     let r=Date.now()-startTime;
     waiting=false;
 
-    document.getElementById("gameBox").style.background="#222";
-    document.getElementById("gameBox").innerText="START";
+    document.getElementById("box").style.background="#222";
+    document.getElementById("box").innerText="START";
 
     document.getElementById("rank").innerText="Reaction: "+r+"ms";
   }
@@ -315,15 +291,24 @@ function press(i){
   player.push(i);
 }
 
-/* TYPING */
+/* TYPING (MORE SHORT SENTENCES) */
+const texts=[
+"reflexzone trains your brain fast",
+"speed matters in games",
+"focus improves reaction time",
+"practice makes you better",
+"fast hands win fights",
+"train daily to improve",
+"reaction speed is skill",
+"typing speed is power",
+"stay sharp stay fast",
+"never miss the timing",
+"brain speed is everything",
+"small focus big results"
+];
+
 let sentence="";
 let startTypingTime;
-
-const texts=[
-"reflexzone improves reaction speed typing accuracy and focus",
-"fast brains win games slow brains lose instantly",
-"practice makes you better every single day"
-];
 
 function startTyping(){
   sentence=texts[Math.floor(Math.random()*texts.length)];
