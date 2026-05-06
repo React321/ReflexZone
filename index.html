@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ReflexZone</title>
+<title>ReflexZone – Free Online Reaction, Typing &amp; Memory Games</title>
+
+<!-- Primary Meta Tags -->
+<meta name="title" content="ReflexZone – Free Online Reaction, Typing &amp; Memory Games">
+<meta name="description" content="Test your reflexes, memory, and typing speed with free mini-games. Play Reaction Game, Memory Challenge, Typing Test, and CPS Clicker on ReflexZone.">
+<meta name="keywords" content="reaction game, reflex test, typing speed test, memory game, CPS test, click per second, free online games, brain training">
+<meta name="author" content="Abdurrahman &amp; Azeem">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://react321.github.io/ReflexZone/">
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://react321.github.io/ReflexZone/">
+<meta property="og:title" content="ReflexZone – Free Online Reaction &amp; Memory Games">
+<meta property="og:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games at ReflexZone. No download needed.">
+<meta property="og:image" content="https://react321.github.io/ReflexZone/og-image.png">
+
+<!-- Twitter Card -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://react321.github.io/ReflexZone/">
+<meta property="twitter:title" content="ReflexZone – Free Online Reaction &amp; Memory Games">
+<meta property="twitter:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games. No download needed.">
+<meta property="twitter:image" content="https://react321.github.io/ReflexZone/og-image.png">
 
 <style>
 body{
@@ -91,23 +113,46 @@ button:hover{transform:scale(1.05);}
   background:#00ffcc;
   box-shadow:0 0 10px #00ffcc;
 }
+
+/* SHARE BUTTONS */
+.share-section{
+  margin-top:18px;
+  text-align:center;
+}
+.share-section p{
+  margin-bottom:10px;
+  font-size:14px;
+  opacity:0.85;
+}
+.share-row{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.share-row button{
+  font-size:13px;
+  padding:9px 15px;
+  margin:4px;
+  border-radius:8px;
+  font-weight:bold;
+}
+.btn-twitter{ background:#1d9bf0; color:white; }
+.btn-whatsapp{ background:#25D366; color:white; }
+.btn-copy{ background:#333; color:#00ffcc; border:1px solid #00ffcc; }
 </style>
 </head>
 
 <body>
 
-<!-- HOME (UPDATED WITH MESSAGES + FOOTER) -->
+<!-- HOME -->
 <div id="home" class="screen active">
   <div class="panel">
     <h1>ReflexZone</h1>
-
     <p id="homeMsg">Stay fast. Stay sharp.</p>
-
     <p>Reaction • Memory • Typing • Arcade</p>
-
     <button onclick="show('game')">Reaction Game</button>
     <button onclick="show('arcade')">Arcade 🎮</button>
-
     <div style="margin-top:20px; font-size:12px; opacity:0.7;">
       <p>© 2026 ReflexZone. All rights reserved.</p>
       <p>Created by Abdurrahman & Azeem</p>
@@ -122,7 +167,14 @@ button:hover{transform:scale(1.05);}
     <h2>⚡ Reaction Game</h2>
     <div id="box" onclick="clickBox()">START</div>
     <p id="rank"></p>
-
+    <div class="share-section" id="shareReaction" style="display:none;">
+      <p>🎉 Challenge your friends!</p>
+      <div class="share-row">
+        <button class="btn-twitter" onclick="shareTwitter('reaction')">Share on X</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp('reaction')">WhatsApp</button>
+        <button class="btn-copy" onclick="copyLink()">Copy Link</button>
+      </div>
+    </div>
     <button class="bigBack" onclick="show('home')">⬅ Back</button>
   </div>
 </div>
@@ -131,14 +183,11 @@ button:hover{transform:scale(1.05);}
 <div id="arcade" class="screen">
   <div class="panel">
     <h2>🎮 Arcade Hub</h2>
-
     <button onclick="openGame('reaction')">⚡ Reaction</button>
     <button onclick="openGame('memory')">🧠 Memory</button>
     <button onclick="openGame('typing')">⌨️ Typing</button>
-
     <button onclick="openGame('click1')">⚡ 1s CPS</button>
     <button onclick="openGame('click5')">⚡ 5s CPS</button>
-
     <button class="bigBack" onclick="show('home')">⬅ Back</button>
   </div>
 </div>
@@ -148,10 +197,16 @@ button:hover{transform:scale(1.05);}
   <div class="panel">
     <h2>🧠 Memory Game</h2>
     <p id="memoryStatus">Watch pattern</p>
-
     <div id="memoryGrid"></div>
-
     <button onclick="startMemory()">Start</button>
+    <div class="share-section" id="shareMemory" style="display:none;">
+      <p>🎉 Challenge your friends!</p>
+      <div class="share-row">
+        <button class="btn-twitter" onclick="shareTwitter('memory')">Share on X</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp('memory')">WhatsApp</button>
+        <button class="btn-copy" onclick="copyLink()">Copy Link</button>
+      </div>
+    </div>
     <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
   </div>
 </div>
@@ -160,11 +215,17 @@ button:hover{transform:scale(1.05);}
 <div id="typingGame" class="screen">
   <div class="panel">
     <h2>⌨️ Typing Game</h2>
-
     <p id="sentence"></p>
     <input id="typeInput" oninput="checkTyping()" style="padding:10px;width:90%;font-size:16px;" />
     <p id="typingResult"></p>
-
+    <div class="share-section" id="shareTyping" style="display:none;">
+      <p>🎉 Challenge your friends!</p>
+      <div class="share-row">
+        <button class="btn-twitter" onclick="shareTwitter('typing')">Share on X</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp('typing')">WhatsApp</button>
+        <button class="btn-copy" onclick="copyLink()">Copy Link</button>
+      </div>
+    </div>
     <button onclick="startTyping()">New Text</button>
     <button class="bigBack" onclick="show('arcade')">⬅ Back</button>
   </div>
@@ -174,11 +235,16 @@ button:hover{transform:scale(1.05);}
 <div id="clickGame" class="screen">
   <div class="panel">
     <h2 id="clickTitle">CPS Challenge</h2>
-
     <div id="clickBox" onclick="countClick()">CLICK FAST!</div>
-
     <p id="clickInfo"></p>
-
+    <div class="share-section" id="shareCPS" style="display:none;">
+      <p>🎉 Challenge your friends!</p>
+      <div class="share-row">
+        <button class="btn-twitter" onclick="shareTwitter('cps')">Share on X</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp('cps')">WhatsApp</button>
+        <button class="btn-copy" onclick="copyLink()">Copy Link</button>
+      </div>
+    </div>
     <button onclick="show('arcade')" class="bigBack">⬅ Back</button>
   </div>
 </div>
@@ -190,7 +256,6 @@ function show(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* HOME MESSAGES */
 const homeMessages = [
 "Stay fast. Stay sharp.",
 "Train your reflexes.",
@@ -206,65 +271,52 @@ setInterval(()=>{
   }
 },3000);
 
-/* REST OF YOUR ORIGINAL CODE (UNCHANGED BELOW THIS POINT) */
-
-/* ROUTER */
 let mode="";
 let cpsClicks=0;
 let cpsRunning=false;
 let cpsTimer;
 
-/* OPEN GAMES */
 function openGame(g){
   if(g==="reaction") show("game");
   if(g==="memory"){ show("memoryGame"); setupMemory(); }
   if(g==="typing") show("typingGame");
-
   if(g==="click1") startCPS(1);
   if(g==="click5") startCPS(5);
 }
 
-/* CPS */
 let allowClick=false;
 
 function startCPS(sec){
   show("clickGame");
-
+  document.getElementById("shareCPS").style.display="none";
   mode = sec;
   cpsClicks = 0;
   cpsRunning = false;
   allowClick = false;
-
   let box = document.getElementById("clickBox");
   let info = document.getElementById("clickInfo");
-
   box.innerText="3";
   let count=3;
-
   let countdown=setInterval(()=>{
     count--;
     if(count>0) box.innerText=count;
     if(count===0) box.innerText="GO!";
     if(count<0){
       clearInterval(countdown);
-
       cpsRunning=true;
       cpsClicks=0;
       allowClick=true;
-
       box.innerText="CLICK!";
       box.style.background="#00ffcc";
-
       cpsTimer=setTimeout(()=>{
         cpsRunning=false;
         allowClick=false;
-
         let cps=(cpsClicks/sec).toFixed(2);
-
         box.innerText="DONE";
         box.style.background="#222";
-
         info.innerText="Clicks: "+cpsClicks+" | CPS: "+cps;
+        lastScores.cps = cpsClicks + " clicks | " + cps + " CPS";
+        document.getElementById("shareCPS").style.display="block";
       },sec*1000);
     }
   },1000);
@@ -275,13 +327,11 @@ function countClick(){
   cpsClicks++;
 }
 
-/* MEMORY FIXED */
 let pattern=[], player=[], canPlay=false;
 
 function setupMemory(){
   let g=document.getElementById("memoryGrid");
   if(g.innerHTML!=="") return;
-
   for(let i=0;i<9;i++){
     let d=document.createElement("div");
     d.className="memBox";
@@ -292,24 +342,20 @@ function setupMemory(){
 
 function startMemory(){
   pattern=[]; player=[]; canPlay=false;
-
+  document.getElementById("shareMemory").style.display="none";
   for(let i=0;i<5;i++){
     pattern.push(Math.floor(Math.random()*9));
   }
-
   let boxes=document.querySelectorAll(".memBox");
   let i=0;
-
   let interval=setInterval(()=>{
     if(i>0) boxes[pattern[i-1]].classList.remove("memActive");
-
     if(i>=pattern.length){
       clearInterval(interval);
       canPlay=true;
       document.getElementById("memoryStatus").innerText="Your turn!";
       return;
     }
-
     boxes[pattern[i]].classList.add("memActive");
     i++;
   },450);
@@ -317,24 +363,21 @@ function startMemory(){
 
 function press(i){
   if(!canPlay) return;
-
   player.push(i);
-
   let idx=player.length-1;
-
   if(player[idx]!==pattern[idx]){
     document.getElementById("memoryStatus").innerText="❌ Wrong!";
     canPlay=false;
     return;
   }
-
   if(player.length===pattern.length){
     document.getElementById("memoryStatus").innerText="✔ You Win!";
     canPlay=false;
+    lastScores.memory = "completed the memory pattern";
+    document.getElementById("shareMemory").style.display="block";
   }
 }
 
-/* TYPING */
 const texts=[
 "reflexzone trains your brain fast",
 "speed matters in games",
@@ -351,18 +394,80 @@ function startTyping(){
   document.getElementById("sentence").innerText=sentence;
   document.getElementById("typeInput").value="";
   document.getElementById("typingResult").innerText="";
+  document.getElementById("shareTyping").style.display="none";
   startTypingTime=Date.now();
 }
 
 function checkTyping(){
   let v=document.getElementById("typeInput").value;
-
   if(v===sentence){
     let t=(Date.now()-startTypingTime)/1000;
     let wpm=Math.round((sentence.split(" ").length/t)*60);
-
     document.getElementById("typingResult").innerText="WPM: "+wpm;
+    lastScores.typing = wpm + " WPM";
+    document.getElementById("shareTyping").style.display="block";
   }
+}
+
+let reactionState = "idle";
+let reactionTimeout;
+let reactionStart;
+
+function clickBox(){
+  let box = document.getElementById("box");
+  let rank = document.getElementById("rank");
+  if(reactionState === "idle"){
+    reactionState = "waiting";
+    box.style.background = "#ff5555";
+    box.innerText = "Wait...";
+    rank.innerText = "";
+    document.getElementById("shareReaction").style.display="none";
+    let delay = 1500 + Math.random() * 3000;
+    reactionTimeout = setTimeout(()=>{
+      reactionState = "go";
+      box.style.background = "#00ffcc";
+      box.innerText = "CLICK!";
+      reactionStart = Date.now();
+    }, delay);
+  } else if(reactionState === "waiting"){
+    clearTimeout(reactionTimeout);
+    reactionState = "idle";
+    box.style.background = "#222";
+    box.innerText = "Too early! Try again";
+    rank.innerText = "";
+  } else if(reactionState === "go"){
+    let ms = Date.now() - reactionStart;
+    reactionState = "idle";
+    box.style.background = "#222";
+    box.innerText = "START";
+    let r = ms < 200 ? "⚡ Legendary" : ms < 300 ? "🔥 Pro" : ms < 450 ? "✅ Average" : "🐢 Slow";
+    rank.innerText = ms + "ms — " + r;
+    lastScores.reaction = ms + "ms (" + r.replace(/[^a-zA-Z0-9ms\(\) ]/g,"").trim() + ")";
+    document.getElementById("shareReaction").style.display="block";
+  }
+}
+
+const siteURL = "https://react321.github.io/ReflexZone/";
+const lastScores = { reaction:"", typing:"", memory:"", cps:"" };
+
+function shareTwitter(game){
+  let score = lastScores[game];
+  let gameNames = { reaction:"Reaction Game", typing:"Typing Game", memory:"Memory Game", cps:"CPS Challenge" };
+  let text = "I just played " + gameNames[game] + " on ReflexZone and scored " + score + "! Can you beat me? ⚡ #ReflexZone";
+  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(siteURL), "_blank");
+}
+
+function shareWhatsApp(game){
+  let score = lastScores[game];
+  let gameNames = { reaction:"Reaction Game", typing:"Typing Game", memory:"Memory Game", cps:"CPS Challenge" };
+  let text = "I scored " + score + " on ReflexZone's " + gameNames[game] + "! Test your reflexes here: " + siteURL;
+  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+}
+
+function copyLink(){
+  navigator.clipboard.writeText(siteURL).then(()=>{
+    alert("Link copied! Share it with friends 🎮");
+  });
 }
 
 </script>
