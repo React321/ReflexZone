@@ -1,77 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ReflexZone - Test Your Reaction Speed</title>
-<meta name="description" content="Test your reaction speed on ReflexZone!">
-<meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
-
+<meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReflexZone</title>
 <style>
 body {
   margin: 0;
-  font-family: Arial;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
   color: white;
-  text-align: center;
-  display: flex;
+  overflow: hidden;
+}
+
+/* Screens */
+.screen {
+  display: none;
+  height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  min-height: 100vh;
+}
+.active { display: flex; }
+
+/* Home */
+#home h1 {
+  font-size: 50px;
+  margin-bottom: 10px;
 }
 
-h1 {
-  font-size: 3rem;
-  margin-top: 60px;
+.creators {
+  font-weight: bold;
+  color: #00ffcc;
+  margin-bottom: 20px;
 }
 
-p {
-  opacity: 0.8;
-}
-
-.play-btn {
-  margin-top: 40px;
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  border: none;
-  border-radius: 10px;
-  background: #00e5ff;
-  color: black;
-  cursor: pointer;
-
-  box-shadow: 0 0 20px #00e5ff;
-  transition: 0.3s;
-}
-
-.play-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 40px #00e5ff;
-}
-
-footer {
-  margin-top: auto;
-  padding: 20px;
+.small-msgs {
+  font-size: 14px;
   opacity: 0.7;
+  text-align: center;
+  max-width: 400px;
+  margin-bottom: 20px;
 }
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#playBtn {
+  background: #00ffcc;
+  font-size: 16px;
+  padding: 10px 18px;
+}
+
+/* Game */
+#gameBox {
+  width: 200px;
+  height: 200px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.rank {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #ffcc00;
+}
+
+/* Shop */
+.shop-item {
+  background: #1a1a1a;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Message box */
+#msgBox {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: none;
+}
+
+/* Themes */
+.light { background: white; color: black; }
+.neon { background: #050505; color: #00ffcc; }
 </style>
 </head>
-
 <body>
 
-<h1>⚡ ReflexZone</h1>
-<p>Test your reaction speed and become the fastest.</p>
-<p>Can you reach GOD rank? 👑</p>
+<!-- HOME -->
+<div id="home" class="screen active">
+  <h1>ReflexZone</h1>
+  <div class="creators">Abdurrahman & Azeem</div>
+  <div class="small-msgs">
+    Test your reaction speed.<br>
+    Try to beat Alien rank.<br>
+    Fast reflex = better rank.
+  </div>
+  <button id="playBtn" onclick="showScreen('game')">Play</button>
+  <button onclick="showScreen('shop')">Shop</button>
+</div>
 
-<button class="play-btn" onclick="startGame()">Play Now</button>
+<!-- GAME -->
+<div id="game" class="screen">
+  <div id="gameBox" onclick="clickBox()">WAIT...</div>
+  <div class="rank" id="rank">Rank: -</div>
+  <button onclick="showScreen('home')">Back</button>
+</div>
 
-<footer>
-  Made by Abdurrahman & Abdul Azeem<br>
-  📧 abdurrahmanomg15@gmail.com | azzeem987@gmail.com
-</footer>
+<!-- SHOP -->
+<div id="shop" class="screen">
+  <h2>Shop</h2>
+  <div class="shop-item" onclick="buyItem('Neon Theme')">Neon Theme - 100 coins</div>
+  <div class="shop-item" onclick="buyItem('Slow Motion Mode')">Slow Motion Mode - 200 coins</div>
+  <div class="shop-item" onclick="buyItem('Rainbow Theme')">Rainbow Theme - 300 coins</div>
+  <button onclick="showScreen('home')">Back</button>
+</div>
+
+<!-- MESSAGE BOX -->
+<div id="msgBox"></div>
 
 <script>
-function startGame() {
-  window.location.href = "game.html";
+let startTime;
+let waiting = false;
+let coins = 0;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function clickBox(){
+  if(!waiting){
+    document.getElementById('gameBox').innerText = "WAIT FOR GREEN...";
+    setTimeout(() => {
+      document.getElementById('gameBox').style.background = "green";
+      document.getElementById('gameBox').innerText = "CLICK!";
+      startTime = Date.now();
+      waiting = true;
+    }, Math.random()*3000 + 1000);
+  } else {
+    let reaction = Date.now() - startTime;
+    waiting = false;
+    document.getElementById('gameBox').style.background = "#222";
+    document.getElementById('gameBox').innerText = "WAIT...";
+
+    let rank = "";
+    if(reaction < 200) rank = "Alien 🚀";
+    else if(reaction < 350) rank = "Fast ⚡";
+    else if(reaction < 600) rank = "Normal 👍";
+    else rank = "Slow 🐌";
+
+    document.getElementById('rank').innerText = `Rank: ${rank} (${reaction}ms)`;
+    coins += Math.max(1, Math.floor(1000/reaction));
+
+    showMsg("You earned coins! +" + Math.floor(1000/reaction));
+  }
+}
+
+function buyItem(item){
+  showMsg(item + " purchased!");
+}
+
+function showMsg(text){
+  let box = document.getElementById('msgBox');
+  box.style.display = "block";
+  box.innerText = text;
+  setTimeout(()=> box.style.display = "none", 2000);
 }
 </script>
 
