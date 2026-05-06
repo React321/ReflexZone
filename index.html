@@ -12,6 +12,24 @@ body {
   background: #0f0f0f;
   color: white;
   overflow: hidden;
+  transition: 0.3s;
+}
+
+/* THEMES */
+body.neon {
+  background: #050014;
+  color: #00ffcc;
+}
+body.rainbow {
+  background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffcc);
+  background-size: 400% 400%;
+  animation: move 6s infinite linear;
+}
+
+@keyframes move {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
 .screen {
@@ -24,10 +42,7 @@ body {
 }
 .active { display: flex; }
 
-#home h1 {
-  font-size: 50px;
-  margin-bottom: 10px;
-}
+#home h1 { font-size: 50px; margin-bottom: 10px; }
 
 .creators {
   font-weight: bold;
@@ -65,6 +80,7 @@ button {
   cursor: pointer;
   text-align: center;
   padding: 10px;
+  font-weight: bold;
 }
 
 .rank {
@@ -133,7 +149,7 @@ footer span { color: #00ffcc; font-weight: bold; }
 </div>
 
 <div id="game" class="screen">
-  <div id="gameBox" onclick="clickBox()">WAIT...</div>
+  <div id="gameBox" onclick="clickBox()">TRY NOW</div>
   <div class="rank" id="rank">Rank: -</div>
   <div id="leaderboard">🏆 Best Times: none</div>
   <button onclick="showScreen('home')">Back</button>
@@ -141,9 +157,9 @@ footer span { color: #00ffcc; font-weight: bold; }
 
 <div id="shop" class="screen">
   <h2>Shop</h2>
-  <div class="shop-item" onclick="buyItem('Neon Theme')">Neon Theme - 100 coins</div>
-  <div class="shop-item" onclick="buyItem('Slow Motion Mode')">Slow Motion Mode - 200 coins</div>
-  <div class="shop-item" onclick="buyItem('Rainbow Theme')">Rainbow Theme - 300 coins</div>
+  <div class="shop-item" onclick="buyItem('Neon Theme',100,'neon')">Neon Theme - 100 coins</div>
+  <div class="shop-item" onclick="buyItem('Slow Motion Mode',200,'slow')">Slow Motion Mode - 200 coins</div>
+  <div class="shop-item" onclick="buyItem('Rainbow Theme',300,'rainbow')">Rainbow Theme - 300 coins</div>
   <button onclick="showScreen('home')">Back</button>
 </div>
 
@@ -159,10 +175,22 @@ let startTime;
 let waiting = false;
 let coins = 0;
 let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
+let owned = JSON.parse(localStorage.getItem("rz_owned")) || [];
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+function applyTheme(){
+  document.body.classList.remove('neon','rainbow');
+  if(owned.includes('neon')) document.body.classList.add('neon');
+  if(owned.includes('rainbow')) document.body.classList.add('rainbow');
+}
+
+function saveData(){
+  localStorage.setItem("rz_best", JSON.stringify(bestTimes));
+  localStorage.setItem("rz_owned", JSON.stringify(owned));
 }
 
 function updateLB(){
@@ -172,10 +200,6 @@ function updateLB(){
   }
   document.getElementById("leaderboard").innerHTML = 
     "🏆 Best Times:<br>" + bestTimes.slice(0,5).map(t => t + "ms").join("<br>");
-}
-
-function saveLB(){
-  localStorage.setItem("rz_best", JSON.stringify(bestTimes));
 }
 
 function clickBox(){
@@ -190,47 +214,51 @@ function clickBox(){
   } else {
     let reaction = Date.now() - startTime;
     waiting = false;
+
     document.getElementById('gameBox').style.background = "#222";
-    document.getElementById('gameBox').innerText = "WAIT...";
+    document.getElementById('gameBox').innerText = "TRY AGAIN";
 
-    let rank = "";
-    let rankMsg = "";
+    let rank="", rankMsg="";
+    if(reaction<200){rank="Alien 🚀";rankMsg="BRO WHAT??"}
+    else if(reaction<250){rank="Fast ⚡";rankMsg="INSANE SPEED ⚡"}
+    else if(reaction<450){rank="Normal 👍";rankMsg="decent"}
+    else{rank="Slow 🐌";rankMsg="too slow"}
 
-    const alienMsgs = ["BRO WHAT?? this is not human...","nahhh this is illegal speed 😭","you just broke the system 💀","AI? or human? impossible..."];
-    const fastMsgs = ["INSANE speed, you're cracked ⚡","bro you're actually fast now","clean reaction time 👀","that was sharp 🔥"];
-    const normalMsgs = ["decent... 300ms is here","average performance 👍","not bad, not insane","you can still improve"];
-    const slowMsgs = ["nahh this is too slow 💀","bro are you even awake?","lag detected 🐌","you reacted after it happened 😭"];
-
-    if(reaction < 200){ rank="Alien 🚀"; rankMsg=alienMsgs[Math.floor(Math.random()*alienMsgs.length)]; }
-    else if(reaction < 250){ rank="Fast ⚡"; rankMsg=fastMsgs[Math.floor(Math.random()*fastMsgs.length)]; }
-    else if(reaction < 450){ rank="Normal 👍"; rankMsg=normalMsgs[Math.floor(Math.random()*normalMsgs.length)]; }
-    else { rank="Slow 🐌"; rankMsg=slowMsgs[Math.floor(Math.random()*slowMsgs.length)]; }
-
-    document.getElementById('rank').innerText = `Rank: ${rank} (${reaction}ms) - ${rankMsg}`;
-
-    coins += Math.max(1, Math.floor(1000/reaction));
-    showMsg("Coins +" + Math.floor(1000/reaction));
+    document.getElementById('rank').innerText=`Rank: ${rank} (${reaction}ms) - ${rankMsg}`;
 
     bestTimes.push(reaction);
     bestTimes.sort((a,b)=>a-b);
-    bestTimes = bestTimes.slice(0,10);
-    saveLB();
+    bestTimes=bestTimes.slice(0,10);
+    saveData();
     updateLB();
   }
 }
 
-function buyItem(item){
-  showMsg(item + " purchased!");
+function buyItem(name,cost,key){
+  if(owned.includes(key)){
+    showMsg("Already owned!");
+    return;
+  }
+  if(coins < cost){
+    showMsg("Not enough coins!");
+    return;
+  }
+  coins -= cost;
+  owned.push(key);
+  saveData();
+  applyTheme();
+  showMsg(name + " unlocked!");
 }
 
 function showMsg(text){
-  let box = document.getElementById('msgBox');
-  box.style.display = "block";
-  box.innerText = text;
-  setTimeout(()=> box.style.display = "none", 2000);
+  let box=document.getElementById('msgBox');
+  box.style.display="block";
+  box.innerText=text;
+  setTimeout(()=>box.style.display="none",2000);
 }
 
 updateLB();
+applyTheme();
 </script>
 
 </body>
