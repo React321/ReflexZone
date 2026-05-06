@@ -15,17 +15,12 @@ body {
   transition: 0.3s;
 }
 
-/* THEMES */
-body.neon {
-  background: #050014;
-  color: #00ffcc;
-}
+body.neon { background:#050014; color:#00ffcc; }
 body.rainbow {
-  background: linear-gradient(45deg, #ff00cc, #3333ff, #00ffcc);
-  background-size: 400% 400%;
+  background: linear-gradient(45deg,#ff00cc,#3333ff,#00ffcc);
+  background-size:400% 400%;
   animation: move 6s infinite linear;
 }
-
 @keyframes move {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -40,101 +35,107 @@ body.rainbow {
   justify-content: center;
   flex-direction: column;
 }
-.active { display: flex; }
+.active { display:flex; }
 
-#home h1 { font-size: 50px; margin-bottom: 10px; }
+#home h1 { font-size:50px; margin-bottom:10px; }
 
 .creators {
-  font-weight: bold;
-  color: #00ffcc;
-  margin-bottom: 10px;
+  font-weight:bold;
+  color:#00ffcc;
+  margin-bottom:10px;
 }
 
 .small-msgs {
-  font-size: 14px;
-  opacity: 0.8;
-  text-align: center;
-  max-width: 420px;
-  margin-bottom: 20px;
+  font-size:14px;
+  opacity:0.8;
+  text-align:center;
+  max-width:420px;
+  margin-bottom:20px;
 }
 
 button {
-  padding: 10px 16px;
-  font-size: 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 5px;
+  padding:10px 16px;
+  font-size:15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  margin:5px;
 }
 
-#playBtn { background: #00ffcc; }
+#playBtn{background:#00ffcc;}
+
+#topBar{
+  position:absolute;
+  top:10px;
+  left:10px;
+  font-size:16px;
+  font-weight:bold;
+  color:#00ffcc;
+}
 
 #gameBox {
-  width: 200px;
-  height: 200px;
-  background: #222;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  cursor: pointer;
-  text-align: center;
-  padding: 10px;
-  font-weight: bold;
+  width:200px;
+  height:200px;
+  background:#222;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  text-align:center;
 }
 
 .rank {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #ffcc00;
-  text-align: center;
+  margin-top:10px;
+  font-size:18px;
+  color:#ffcc00;
 }
 
 #leaderboard {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #00ffcc;
-  text-align: center;
+  margin-top:10px;
+  font-size:14px;
+  color:#00ffcc;
 }
 
 .shop-item {
-  background: #1a1a1a;
-  padding: 10px;
-  margin: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 220px;
-  text-align: center;
+  background:#1a1a1a;
+  padding:10px;
+  margin:6px;
+  border-radius:8px;
+  cursor:pointer;
+  width:220px;
+  text-align:center;
 }
 
 #msgBox {
-  position: absolute;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #111;
-  padding: 10px 18px;
-  border-radius: 8px;
-  display: none;
-  border: 1px solid #00ffcc;
+  position:absolute;
+  bottom:70px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  padding:10px 18px;
+  border-radius:8px;
+  display:none;
+  border:1px solid #00ffcc;
 }
 
 footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: #0a0a0a;
-  text-align: center;
-  padding: 10px;
-  font-size: 12px;
-  color: #aaa;
-  border-top: 1px solid #222;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  background:#0a0a0a;
+  text-align:center;
+  padding:10px;
+  font-size:12px;
+  color:#aaa;
 }
-
-footer span { color: #00ffcc; font-weight: bold; }
+footer span{color:#00ffcc;font-weight:bold;}
 </style>
 </head>
 <body>
+
+<div id="topBar">💰 Coins: <span id="coinCount">0</span></div>
 
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
@@ -172,94 +173,122 @@ Inquiries: abdurrahmanomg15@gmail.com | azzeem987@gmail.com
 
 <script>
 let startTime;
-let waiting = false;
-let coins = 0;
+let waiting=false;
+let coins = Number(localStorage.getItem("rz_coins")) || 0;
 let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
 let owned = JSON.parse(localStorage.getItem("rz_owned")) || [];
 
+function updateCoins(){
+  document.getElementById("coinCount").innerText = coins;
+}
+
+function saveAll(){
+  localStorage.setItem("rz_coins",coins);
+  localStorage.setItem("rz_best",JSON.stringify(bestTimes));
+  localStorage.setItem("rz_owned",JSON.stringify(owned));
+}
+
 function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function applyTheme(){
-  document.body.classList.remove('neon','rainbow');
-  if(owned.includes('neon')) document.body.classList.add('neon');
-  if(owned.includes('rainbow')) document.body.classList.add('rainbow');
-}
-
-function saveData(){
-  localStorage.setItem("rz_best", JSON.stringify(bestTimes));
-  localStorage.setItem("rz_owned", JSON.stringify(owned));
-}
-
-function updateLB(){
-  if(bestTimes.length === 0){
-    document.getElementById("leaderboard").innerHTML = "🏆 Best Times: none";
-    return;
-  }
-  document.getElementById("leaderboard").innerHTML = 
-    "🏆 Best Times:<br>" + bestTimes.slice(0,5).map(t => t + "ms").join("<br>");
-}
+// RANK MESSAGES (RESTORED)
+const alienMsgs=[
+"BRO WHAT?? this is not human...",
+"nahhh this is illegal speed 😭",
+"you just broke the system 💀",
+"AI? or human? impossible..."
+];
+const fastMsgs=[
+"INSANE speed, you're cracked ⚡",
+"bro you're actually fast now",
+"clean reaction time 👀",
+"that was sharp 🔥"
+];
+const normalMsgs=[
+"decent... 300ms is here",
+"average performance 👍",
+"not bad, not insane",
+"you can still improve"
+];
+const slowMsgs=[
+"nahh this is too slow 💀",
+"bro are you even awake?",
+"lag detected 🐌",
+"you reacted after it happened 😭"
+];
 
 function clickBox(){
   if(!waiting){
-    document.getElementById('gameBox').innerText = "WAIT FOR GREEN...";
-    setTimeout(() => {
-      document.getElementById('gameBox').style.background = "green";
-      document.getElementById('gameBox').innerText = "CLICK!";
-      startTime = Date.now();
-      waiting = true;
-    }, Math.random()*3000 + 1000);
+    document.getElementById('gameBox').innerText="WAIT FOR GREEN...";
+    setTimeout(()=>{
+      document.getElementById('gameBox').style.background="green";
+      document.getElementById('gameBox').innerText="CLICK!";
+      startTime=Date.now();
+      waiting=true;
+    },Math.random()*3000+1000);
   } else {
-    let reaction = Date.now() - startTime;
-    waiting = false;
+    let reaction=Date.now()-startTime;
+    waiting=false;
 
-    document.getElementById('gameBox').style.background = "#222";
-    document.getElementById('gameBox').innerText = "TRY AGAIN";
+    document.getElementById('gameBox').style.background="#222";
+    document.getElementById('gameBox').innerText="TRY AGAIN";
 
-    let rank="", rankMsg="";
-    if(reaction<200){rank="Alien 🚀";rankMsg="BRO WHAT??"}
-    else if(reaction<250){rank="Fast ⚡";rankMsg="INSANE SPEED ⚡"}
-    else if(reaction<450){rank="Normal 👍";rankMsg="decent"}
-    else{rank="Slow 🐌";rankMsg="too slow"}
+    let gain=Math.max(1,Math.floor(1000/reaction));
+    coins+=gain;
 
-    document.getElementById('rank').innerText=`Rank: ${rank} (${reaction}ms) - ${rankMsg}`;
+    let rank="",msg="";
+
+    if(reaction<200){rank="Alien 🚀";msg=alienMsgs[Math.floor(Math.random()*alienMsgs.length)]}
+    else if(reaction<250){rank="Fast ⚡";msg=fastMsgs[Math.floor(Math.random()*fastMsgs.length)]}
+    else if(reaction<450){rank="Normal 👍";msg=normalMsgs[Math.floor(Math.random()*normalMsgs.length)]}
+    else{rank="Slow 🐌";msg=slowMsgs[Math.floor(Math.random()*slowMsgs.length)]}
+
+    document.getElementById('rank').innerText=`Rank: ${rank} (${reaction}ms) - ${msg}`;
 
     bestTimes.push(reaction);
     bestTimes.sort((a,b)=>a-b);
     bestTimes=bestTimes.slice(0,10);
-    saveData();
+
+    saveAll();
+    updateCoins();
     updateLB();
+    showMsg("+"+gain+" coins");
   }
+}
+
+function updateLB(){
+  document.getElementById("leaderboard").innerHTML = bestTimes.length?
+  "🏆 Best Times:<br>"+bestTimes.map(t=>t+"ms").join("<br>")
+  :"🏆 Best Times: none";
 }
 
 function buyItem(name,cost,key){
-  if(owned.includes(key)){
-    showMsg("Already owned!");
-    return;
-  }
-  if(coins < cost){
-    showMsg("Not enough coins!");
-    return;
-  }
-  coins -= cost;
+  if(owned.includes(key)) return showMsg("Already owned!");
+  if(coins<cost) return showMsg("Not enough coins!");
+
+  coins-=cost;
   owned.push(key);
-  saveData();
-  applyTheme();
-  showMsg(name + " unlocked!");
+
+  document.body.classList.remove("neon","rainbow");
+  if(key=="neon") document.body.classList.add("neon");
+  if(key=="rainbow") document.body.classList.add("rainbow");
+
+  saveAll();
+  updateCoins();
+  showMsg(name+" unlocked!");
 }
 
-function showMsg(text){
-  let box=document.getElementById('msgBox');
-  box.style.display="block";
-  box.innerText=text;
-  setTimeout(()=>box.style.display="none",2000);
+function showMsg(t){
+  let b=document.getElementById("msgBox");
+  b.style.display="block";
+  b.innerText=t;
+  setTimeout(()=>b.style.display="none",2000);
 }
 
+updateCoins();
 updateLB();
-applyTheme();
 </script>
-
 </body>
 </html>
