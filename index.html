@@ -205,34 +205,60 @@ function startCPS(sec){
 
   mode = sec;
   cpsClicks = 0;
-  cpsRunning = true;
+  cpsRunning = false;
 
   document.getElementById("clickTitle").innerText =
     sec + " SECOND CPS CHALLENGE";
 
-  document.getElementById("clickInfo").innerText =
-    "Click as FAST as possible!";
+  let box = document.getElementById("clickBox");
+  let info = document.getElementById("clickInfo");
 
-  document.getElementById("clickBox").innerText = "START CLICKING!";
-  document.getElementById("clickBox").style.background = "#00ffcc";
+  box.style.background = "#222";
+  info.innerText = "Get ready...";
 
-  cpsTimer = setTimeout(()=>{
-    cpsRunning = false;
+  let count = 3;
+  box.innerText = count;
 
-    let cps = (cpsClicks / sec).toFixed(2);
+  let countdown = setInterval(()=>{
 
-    document.getElementById("clickBox").style.background = "#222";
-    document.getElementById("clickBox").innerText = "DONE";
+    count--;
 
-    document.getElementById("clickInfo").innerText =
-      "Clicks: " + cpsClicks + " | CPS: " + cps;
+    if(count > 0){
+      box.innerText = count;
+    }
 
-  }, sec * 1000);
-}
+    if(count === 0){
+      box.innerText = "GO!";
+    }
 
-function countClick(){
-  if(!cpsRunning) return;
-  cpsClicks++;
+    if(count < 0){
+      clearInterval(countdown);
+
+      // START CPS GAME
+      cpsRunning = true;
+      cpsClicks = 0;
+
+      box.innerText = "CLICK!";
+      box.style.background = "#00ffcc";
+
+      info.innerText = "CLICK AS FAST AS YOU CAN!";
+
+      cpsTimer = setTimeout(()=>{
+
+        cpsRunning = false;
+
+        let cps = (cpsClicks / sec).toFixed(2);
+
+        box.style.background = "#222";
+        box.innerText = "DONE";
+
+        info.innerText =
+          "Clicks: " + cpsClicks + " | CPS: " + cps;
+
+      }, sec * 1000);
+    }
+
+  }, 1000);
 }
 
 /* ================= REACTION ================= */
