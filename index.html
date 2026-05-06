@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
 <title>ReflexZone</title>
+
 <style>
 body {
   margin: 0;
@@ -21,6 +22,7 @@ body.rainbow {
   background-size:400% 400%;
   animation: move 6s infinite linear;
 }
+
 @keyframes move {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
@@ -131,51 +133,10 @@ footer {
   color:#aaa;
 }
 footer span{color:#00ffcc;font-weight:bold;}
-
-/* 🔥 BANNER AD (ONLY AD TYPE) */
-#adBanner{
-  position:fixed;
-  bottom:45px;
-  left:0;
-  width:100%;
-  background:#111;
-  text-align:center;
-  padding:8px;
-  font-size:12px;
-  color:#aaa;
-  border-top:1px solid #00ffcc;
-}
-
-/* REWARD AD POPUP */
-#adPopup{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#111;
-  padding:20px;
-  border-radius:10px;
-  display:none;
-  z-index:1000;
-  text-align:center;
-}
-
-#adPopup button{
-  margin-top:10px;
-}
 </style>
 </head>
+
 <body>
-
-<!-- BANNER AD ONLY -->
-<div id="adBanner">Ad Space - Banner (Insert AdSense / Raptive code here)</div>
-
-<!-- REWARD AD -->
-<div id="adPopup">
-  <p>Sponsored Ad</p>
-  <p>Thanks for supporting ReflexZone</p>
-  <button onclick="closeAd()">Close</button>
-</div>
 
 <div id="topBar">💰 Coins: <span id="coinCount">0</span></div>
 
@@ -189,7 +150,6 @@ footer span{color:#00ffcc;font-weight:bold;}
   </div>
   <button id="playBtn" onclick="showScreen('game')">Play</button>
   <button onclick="showScreen('shop')">Shop</button>
-  <button onclick="watchRewardAd()">🎁 Watch Ad +50 Coins</button>
 </div>
 
 <div id="game" class="screen">
@@ -234,26 +194,6 @@ function saveAll(){
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-}
-
-// REWARD AD ONLY
-function watchRewardAd(){
-  showAd();
-  setTimeout(()=>{
-    closeAd();
-    coins += 50;
-    showMsg("+50 coins (ad reward)");
-    saveAll();
-    updateCoins();
-  },3000);
-}
-
-function showAd(){
-  document.getElementById("adPopup").style.display="block";
-}
-
-function closeAd(){
-  document.getElementById("adPopup").style.display="none";
 }
 
 const alienMsgs=["BRO WHAT?? this is not human...","you broke physics 💀"];
@@ -332,5 +272,6 @@ function showMsg(t){
 updateCoins();
 updateLB();
 </script>
+
 </body>
 </html>
