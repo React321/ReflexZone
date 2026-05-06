@@ -184,9 +184,11 @@ function show(id){
 /* ROUTER */
 let mode="";
 let cpsClicks=0;
-let cpsTime=0;
 let cpsRunning=false;
 let cpsTimer;
+
+/* CPS LOCK FIX */
+let allowClick = false;
 
 /* OPEN GAMES */
 function openGame(g){
@@ -198,7 +200,7 @@ function openGame(g){
   if(g==="click5") startCPS(5);
 }
 
-/* ================= CPS CLICKER (NEW FIXED SYSTEM) ================= */
+/* ================= CPS CLICKER FIXED ================= */
 
 function startCPS(sec){
   show("clickGame");
@@ -206,6 +208,7 @@ function startCPS(sec){
   mode = sec;
   cpsClicks = 0;
   cpsRunning = false;
+  allowClick = false;
 
   document.getElementById("clickTitle").innerText =
     sec + " SECOND CPS CHALLENGE";
@@ -214,10 +217,10 @@ function startCPS(sec){
   let info = document.getElementById("clickInfo");
 
   box.style.background = "#222";
+  box.innerText = "3";
   info.innerText = "Get ready...";
 
   let count = 3;
-  box.innerText = count;
 
   let countdown = setInterval(()=>{
 
@@ -234,9 +237,10 @@ function startCPS(sec){
     if(count < 0){
       clearInterval(countdown);
 
-      // START CPS GAME
       cpsRunning = true;
       cpsClicks = 0;
+
+      allowClick = true; // 🔥 FIXED: ONLY NOW CAN CLICK
 
       box.innerText = "CLICK!";
       box.style.background = "#00ffcc";
@@ -246,6 +250,7 @@ function startCPS(sec){
       cpsTimer = setTimeout(()=>{
 
         cpsRunning = false;
+        allowClick = false;
 
         let cps = (cpsClicks / sec).toFixed(2);
 
@@ -259,6 +264,11 @@ function startCPS(sec){
     }
 
   }, 1000);
+}
+
+function countClick(){
+  if(!cpsRunning || !allowClick) return;
+  cpsClicks++;
 }
 
 /* ================= REACTION ================= */
@@ -286,7 +296,7 @@ function clickBox(){
   }
 }
 
-/* ================= MEMORY ================= */
+/* ================= MEMORY (FIXED WIN/LOSE) ================= */
 
 let pattern=[], player=[], canPlay=false;
 
@@ -297,13 +307,13 @@ function setupMemory(){
   for(let i=0;i<9;i++){
     let d=document.createElement("div");
     d.className="memBox";
-    d.onclick=()=>player.push(i);
+    d.onclick=()=>press(i);
     g.appendChild(d);
   }
 }
 
 function startMemory(){
-  pattern=[]; player=[];
+  pattern=[]; player=[]; canPlay=false;
 
   for(let i=0;i<5;i++){
     pattern.push(Math.floor(Math.random()*9));
@@ -313,16 +323,39 @@ function startMemory(){
   let i=0;
 
   let interval=setInterval(()=>{
+
     if(i>0) boxes[pattern[i-1]].classList.remove("memActive");
 
     if(i>=pattern.length){
       clearInterval(interval);
+      canPlay=true;
+      document.getElementById("memoryStatus").innerText="Your turn!";
       return;
     }
 
     boxes[pattern[i]].classList.add("memActive");
     i++;
+
   },450);
+}
+
+function press(i){
+  if(!canPlay) return;
+
+  player.push(i);
+
+  let idx = player.length - 1;
+
+  if(player[idx] !== pattern[idx]){
+    document.getElementById("memoryStatus").innerText="❌ Wrong!";
+    canPlay=false;
+    return;
+  }
+
+  if(player.length === pattern.length){
+    document.getElementById("memoryStatus").innerText="✔ You Win!";
+    canPlay=false;
+  }
 }
 
 /* ================= TYPING ================= */
