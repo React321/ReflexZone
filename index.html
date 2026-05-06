@@ -39,22 +39,6 @@ body.rainbow {
 }
 .active { display:flex; }
 
-#home h1 { font-size:50px; margin-bottom:10px; }
-
-.creators {
-  font-weight:bold;
-  color:#00ffcc;
-  margin-bottom:10px;
-}
-
-.small-msgs {
-  font-size:14px;
-  opacity:0.8;
-  text-align:center;
-  max-width:420px;
-  margin-bottom:20px;
-}
-
 button {
   padding:10px 16px;
   font-size:15px;
@@ -62,17 +46,6 @@ button {
   border-radius:8px;
   cursor:pointer;
   margin:5px;
-}
-
-#playBtn{background:#00ffcc;}
-
-#topBar{
-  position:absolute;
-  top:10px;
-  left:10px;
-  font-size:16px;
-  font-weight:bold;
-  color:#00ffcc;
 }
 
 #gameBox {
@@ -88,51 +61,37 @@ button {
   text-align:center;
 }
 
-.rank {
-  margin-top:10px;
-  font-size:18px;
-  color:#ffcc00;
-}
+.rank { margin-top:10px; font-size:18px; color:#ffcc00; }
 
-#leaderboard {
-  margin-top:10px;
-  font-size:14px;
+#topBar{
+  position:absolute;
+  top:10px;
+  left:10px;
   color:#00ffcc;
+  font-weight:bold;
 }
 
-.shop-item {
-  background:#1a1a1a;
+/* MEMORY */
+#memoryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,80px);
+  gap:10px;
+  margin-top:15px;
+}
+.memBox{
+  width:80px;
+  height:80px;
+  background:#222;
+  border-radius:10px;
+}
+.memActive{ background:#00ffcc !important; }
+
+/* TYPING */
+#typeInput{
   padding:10px;
-  margin:6px;
-  border-radius:8px;
-  cursor:pointer;
-  width:220px;
-  text-align:center;
+  margin-top:10px;
+  width:250px;
 }
-
-#msgBox {
-  position:absolute;
-  bottom:70px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#111;
-  padding:10px 18px;
-  border-radius:8px;
-  display:none;
-  border:1px solid #00ffcc;
-}
-
-footer {
-  position:absolute;
-  bottom:0;
-  width:100%;
-  background:#0a0a0a;
-  text-align:center;
-  padding:10px;
-  font-size:12px;
-  color:#aaa;
-}
-footer span{color:#00ffcc;font-weight:bold;}
 </style>
 </head>
 
@@ -140,76 +99,62 @@ footer span{color:#00ffcc;font-weight:bold;}
 
 <div id="topBar">💰 Coins: <span id="coinCount">0</span></div>
 
+<!-- HOME -->
 <div id="home" class="screen active">
   <h1>ReflexZone</h1>
 
-  <div class="creators">Abdurrahman & Azeem</div>
-
-  <div class="small-msgs">
-    Test reaction speed.<br>
-    Unlock ranks: Slow → Normal → Fast → Alien.<br>
-    COMPETE WITH MODES 🔥
-  </div>
-
-  <button id="playBtn" onclick="showScreen('game')">Play</button>
+  <button onclick="showScreen('game')">Play</button>
   <button onclick="showScreen('shop')">Shop</button>
 
-  <!-- 🔥 NEW MODES -->
-  <button onclick="setMode('classic')">Classic</button>
-  <button onclick="setMode('time')">Time Attack</button>
-  <button onclick="setMode('streak')">Streak Mode</button>
-  <button onclick="setMode('precision')">Precision Mode</button>
+  <button onclick="showScreen('arcade')">Arcade 🎮</button>
 </div>
 
+<!-- GAME -->
 <div id="game" class="screen">
   <div id="gameBox" onclick="clickBox()">TRY NOW</div>
   <div class="rank" id="rank">Rank: -</div>
-  <div id="leaderboard">🏆 Best Times: none</div>
   <button onclick="showScreen('home')">Back</button>
 </div>
 
-<div id="shop" class="screen">
-  <h2>Shop</h2>
-  <div class="shop-item" onclick="buyItem('Neon Theme',100,'neon')">Neon Theme - 100 coins</div>
-  <div class="shop-item" onclick="buyItem('Slow Motion Mode',200,'slow')">Slow Motion Mode - 200 coins</div>
-  <div class="shop-item" onclick="buyItem('Rainbow Theme',300,'rainbow')">Rainbow Theme - 300 coins</div>
+<!-- ARCADE -->
+<div id="arcade" class="screen">
+  <h2>🎮 ReflexZone Arcade</h2>
+
+  <button onclick="openGame('reaction')">⚡ Reaction</button>
+  <button onclick="openGame('memory')">🧠 Memory</button>
+  <button onclick="openGame('typing')">⌨️ Typing</button>
+
+  <br><br>
   <button onclick="showScreen('home')">Back</button>
 </div>
 
-<div id="msgBox"></div>
+<!-- MEMORY -->
+<div id="memoryGame" class="screen">
+  <h2>🧠 Memory Game</h2>
+  <p id="memoryStatus">Start game</p>
+  <div id="memoryGrid"></div>
+  <button onclick="startMemory()">Start</button>
+</div>
 
-<footer>
-© 2026 ReflexZone | Abdurrahman & Azeem |
-</footer>
+<!-- TYPING -->
+<div id="typingGame" class="screen">
+  <h2>⌨️ Typing Game</h2>
+  <p id="sentence"></p>
+  <input id="typeInput" oninput="checkTyping()" />
+  <p id="typingResult"></p>
+  <button onclick="startTyping()">Start</button>
+</div>
 
 <script>
+
+/* ================= CORE ================= */
+
+let coins = 0;
 let startTime;
 let waiting=false;
 
-let coins = Number(localStorage.getItem("rz_coins")) || 0;
-let bestTimes = JSON.parse(localStorage.getItem("rz_best")) || [];
-let owned = JSON.parse(localStorage.getItem("rz_owned")) || [];
-
-let mode = "classic";
-let streak = 0;
-let timeLeft = 30;
-let timer = null;
-
-function setMode(m){
-  mode = m;
-  streak = 0;
-  timeLeft = 30;
-  showMsg("Mode: " + m.toUpperCase());
-}
-
 function updateCoins(){
   document.getElementById("coinCount").innerText = coins;
-}
-
-function saveAll(){
-  localStorage.setItem("rz_coins",coins);
-  localStorage.setItem("rz_best",JSON.stringify(bestTimes));
-  localStorage.setItem("rz_owned",JSON.stringify(owned));
 }
 
 function showScreen(id){
@@ -217,107 +162,122 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
 }
 
-const alienMsgs=["BRO WHAT?? this is not human..."];
-const fastMsgs=["INSANE ⚡"];
-const normalMsgs=["decent 👍"];
-const slowMsgs=["too slow 🐌"];
+/* ================= GAME ================= */
 
 function clickBox(){
-
   if(!waiting){
-    document.getElementById('gameBox').innerText="WAIT FOR GREEN...";
+    document.getElementById("gameBox").innerText="WAIT...";
     setTimeout(()=>{
-      document.getElementById('gameBox').style.background="green";
-      document.getElementById('gameBox').innerText="CLICK!";
+      document.getElementById("gameBox").style.background="green";
+      document.getElementById("gameBox").innerText="CLICK!";
       startTime=Date.now();
       waiting=true;
-    },Math.random()*2500+800);
-  }
-
-  else {
-    let reaction=Date.now()-startTime;
+    },Math.random()*2000+800);
+  } else {
+    let r = Date.now()-startTime;
     waiting=false;
 
-    document.getElementById('gameBox').style.background="#222";
-    document.getElementById('gameBox').innerText="TRY AGAIN";
+    document.getElementById("gameBox").style.background="#222";
+    document.getElementById("gameBox").innerText="TRY AGAIN";
 
-    let gain=1;
+    coins += Math.max(1,Math.floor(1000/r));
 
-    // CLASSIC
-    if(mode==="classic"){
-      gain=Math.max(1,Math.floor(1000/reaction));
-      bestTimes.push(reaction);
-    }
+    document.getElementById("rank").innerText = "Reaction: "+r+"ms";
 
-    // STREAK
-    if(mode==="streak"){
-      if(reaction<300){
-        streak++;
-        gain = streak;
-      } else streak = 0;
-    }
-
-    // PRECISION
-    if(mode==="precision"){
-      if(reaction>=200 && reaction<=260){
-        gain = 10;
-        showMsg("PERFECT 🔥");
-      }
-    }
-
-    coins += gain;
-
-    let rank =
-      reaction<200 ? "Alien 🚀"
-      : reaction<250 ? "Fast ⚡"
-      : reaction<450 ? "Normal 👍"
-      : "Slow 🐌";
-
-    document.getElementById('rank').innerText =
-      mode.toUpperCase() + " | " + rank + " ("+reaction+"ms)";
-
-    bestTimes.sort((a,b)=>a-b);
-    bestTimes = bestTimes.slice(0,10);
-
-    saveAll();
     updateCoins();
-    updateLB();
-    showMsg("+"+gain+" coins");
   }
 }
 
-function updateLB(){
-  document.getElementById("leaderboard").innerHTML =
-  bestTimes.length
-  ? "🏆 Best Times:<br>"+bestTimes.map(t=>t+"ms").join("<br>")
-  : "🏆 Best Times: none";
+/* ================= ARCADE ================= */
+
+function openGame(g){
+  if(g==="reaction") showScreen("game");
+  if(g==="memory"){
+    showScreen("memoryGame");
+    setupMemory();
+  }
+  if(g==="typing") showScreen("typingGame");
 }
 
-function buyItem(name,cost,key){
-  if(owned.includes(key)) return showMsg("Already owned!");
-  if(coins<cost) return showMsg("Not enough coins!");
+/* ================= MEMORY GAME ================= */
 
-  coins-=cost;
-  owned.push(key);
+let pattern=[], player=[], canPlay=false;
 
-  document.body.classList.remove("neon","rainbow");
-  if(key=="neon") document.body.classList.add("neon");
-  if(key=="rainbow") document.body.classList.add("rainbow");
-
-  saveAll();
-  updateCoins();
-  showMsg(name+" unlocked!");
+function setupMemory(){
+  let g=document.getElementById("memoryGrid");
+  g.innerHTML="";
+  for(let i=0;i<9;i++){
+    let d=document.createElement("div");
+    d.className="memBox";
+    d.onclick=()=>press(i);
+    g.appendChild(d);
+  }
 }
 
-function showMsg(t){
-  let b=document.getElementById("msgBox");
-  b.style.display="block";
-  b.innerText=t;
-  setTimeout(()=>b.style.display="none",2000);
+function startMemory(){
+  pattern=[];
+  player=[];
+  canPlay=false;
+
+  for(let i=0;i<4;i++){
+    pattern.push(Math.floor(Math.random()*9));
+  }
+
+  let boxes=document.querySelectorAll(".memBox");
+  let i=0;
+
+  let interval=setInterval(()=>{
+    if(i>0) boxes[pattern[i-1]].classList.remove("memActive");
+
+    if(i>=pattern.length){
+      clearInterval(interval);
+      canPlay=true;
+      return;
+    }
+
+    boxes[pattern[i]].classList.add("memActive");
+    i++;
+  },500);
+}
+
+function press(i){
+  if(!canPlay) return;
+  player.push(i);
+
+  if(player[player.length-1] !== pattern[player.length-1]){
+    alert("Wrong ❌");
+    canPlay=false;
+  }
+}
+
+/* ================= TYPING ================= */
+
+let sentence="", startTyping;
+
+const sentences=[
+  "reflexzone is fun",
+  "fast reactions win games",
+  "practice makes perfect"
+];
+
+function startTyping(){
+  sentence = sentences[Math.floor(Math.random()*sentences.length)];
+  document.getElementById("sentence").innerText=sentence;
+  document.getElementById("typeInput").value="";
+  startTyping=Date.now();
+}
+
+function checkTyping(){
+  let v=document.getElementById("typeInput").value;
+  if(v===sentence){
+    let time=(Date.now()-startTyping)/1000;
+    let wpm=Math.round(sentence.split(" ").length/time*60);
+    document.getElementById("typingResult").innerText="WPM: "+wpm;
+  }
 }
 
 updateCoins();
-updateLB();
+
 </script>
 
 </body>
