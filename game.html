@@ -29,7 +29,7 @@ body {
 
 button {
   padding: 10px 20px;
-  margin: 10px;
+  margin: 8px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -40,7 +40,7 @@ button {
   background: #111;
   padding: 20px;
   border-radius: 10px;
-  margin-top: 20px;
+  margin: 20px;
 }
 </style>
 </head>
@@ -58,8 +58,15 @@ button {
 
 <div id="shop">
   <h2>Shop</h2>
-  <button onclick="buyTheme('red',50)">🔴 Red Theme (50)</button><br>
-  <button onclick="buyTheme('green',50)">🟢 Green Theme (50)</button><br>
+
+  <h3>Themes</h3>
+  <button onclick="buyTheme('red',50)">🔴 Red (50)</button>
+  <button onclick="buyTheme('blue',50)">🔵 Blue (50)</button>
+  <button onclick="buyTheme('purple',75)">🟣 Purple (75)</button>
+  <button onclick="buyTheme('yellow',75)">🟡 Yellow (75)</button>
+  <button onclick="buyTheme('cyan',100)">💎 Neon Cyan (100)</button>
+
+  <h3>Upgrades</h3>
   <button onclick="buyRank(100)">👑 Pro Rank (100)</button>
 </div>
 
@@ -67,11 +74,9 @@ button {
 let startTime;
 let waiting = false;
 
-let coins = localStorage.getItem("coins") || 0;
+let coins = parseInt(localStorage.getItem("coins")) || 0;
 let theme = localStorage.getItem("theme") || "green";
 let rank = localStorage.getItem("rank") || "Beginner";
-
-coins = parseInt(coins);
 
 updateUI();
 
@@ -92,21 +97,20 @@ box.onclick = () => {
     }, delay);
 
   } else {
-    let reaction = Date.now() - startTime;
-
     if (!startTime) {
       box.innerText = "Too Early!";
       reset();
       return;
     }
 
+    let reaction = Date.now() - startTime;
     let earned = getCoins(reaction);
+
     coins += earned;
 
     box.innerText = reaction + " ms (+ " + earned + " coins)";
-    save();
-
     updateRank(reaction);
+    save();
     updateUI();
 
     reset();
@@ -118,7 +122,7 @@ function reset() {
   startTime = null;
 
   setTimeout(() => {
-    box.style.background = "green";
+    box.style.background = theme;
     box.innerText = "Click to Start";
   }, 1500);
 }
@@ -131,12 +135,10 @@ function getCoins(ms) {
 }
 
 function updateRank(ms) {
-  if (ms < 200) rank = "GOD";
+  if (ms < 200) rank = "GOD 👑";
   else if (ms < 300) rank = "Pro";
   else if (ms < 400) rank = "Fast";
   else rank = "Average";
-
-  save();
 }
 
 function updateUI() {
