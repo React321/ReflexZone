@@ -1,130 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 📱 MOBILE SUPPORT -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReflexZone - Test Your Reaction Speed</title>
+<meta name="description" content="Test your reaction speed on ReflexZone!">
+<meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
 
-  <!-- 🔎 GOOGLE VERIFICATION -->
-  <meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-  <!-- 🔎 SEO TITLE -->
-  <title>Reaction Arena - Fast Reaction Speed Game Online</title>
+h1 {
+  font-size: 3rem;
+  margin-top: 60px;
+}
 
-  <!-- 🔎 SEO DESCRIPTION -->
-  <meta name="description" content="Test your reaction speed in Reaction Arena. Compete globally, improve your reflexes, and become the fastest player online.">
+p {
+  opacity: 0.8;
+}
 
-  <!-- 🔑 SEO KEYWORDS -->
-  <meta name="keywords" content="reaction game, reaction speed test, reflex game, online reaction challenge, Reaction Arena">
+.play-btn {
+  margin-top: 40px;
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 10px;
+  background: #00e5ff;
+  color: black;
+  cursor: pointer;
 
-  <!-- 🌍 AUTHOR -->
-  <meta name="author" content="Abdurrahman & Abdul Azeem">
+  box-shadow: 0 0 20px #00e5ff;
+  transition: 0.3s;
+}
 
-  <!-- 📱 SOCIAL PREVIEW -->
-  <meta property="og:title" content="Reaction Arena - Fast Reaction Game">
-  <meta property="og:description" content="Compete globally and test your reaction speed.">
-  <meta property="og:type" content="website">
+.play-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 40px #00e5ff;
+}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-    }
-
-    .hero {
-      padding: 80px 20px 40px;
-    }
-
-    .logo {
-      font-size: 50px;
-      font-weight: bold;
-      color: #00e5ff;
-      text-shadow: 0 0 20px #00e5ff;
-    }
-
-    .tagline {
-      margin-top: 10px;
-      opacity: 0.8;
-    }
-
-    .play-btn {
-      margin-top: 30px;
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: linear-gradient(90deg, #22c55e, #06b6d4);
-      color: black;
-      font-weight: bold;
-      box-shadow: 0 0 20px #00e5ff;
-      transition: 0.3s;
-    }
-
-    .play-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 40px #00e5ff;
-    }
-
-    .card {
-      margin: 40px auto;
-      width: 300px;
-      padding: 20px;
-      background: #111827;
-      border-radius: 15px;
-    }
-
-    .feature {
-      margin: 10px 0;
-      opacity: 0.9;
-    }
-
-    footer {
-      margin-top: 40px;
-      background: #0b1220;
-      padding: 15px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
-  </style>
+footer {
+  margin-top: auto;
+  padding: 20px;
+  opacity: 0.7;
+}
+</style>
 </head>
 
 <body>
 
-<div class="hero">
+<h1>⚡ ReflexZone</h1>
+<p>Test your reaction speed and become the fastest.</p>
+<p>Can you reach GOD rank? 👑</p>
 
-  <div class="logo">⚡ Reaction Arena</div>
-
-  <div class="tagline">
-    Only 1% can react under 150ms 😈
-  </div>
-
-  <button class="play-btn" onclick="window.location.href='game.html'">
-    ▶ Play Now
-  </button>
-
-</div>
-
-<div class="card">
-  <h3>🔥 Why Play?</h3>
-  <div class="feature">⚡ Test your reaction speed</div>
-  <div class="feature">🏆 Compete globally</div>
-  <div class="feature">😈 Beat your friends</div>
-</div>
-
-<div class="card">
-  <h3>👨‍💻 Creators</h3>
-  <div class="feature">Abdurrahman - abdurrahmanomg15@gmail.com</div>
-  <div class="feature">Abdul Azeem - azzeem987@gmail.com</div>
-</div>
+<button class="play-btn" onclick="startGame()">Play Now</button>
 
 <footer>
-  Made with ❤️ by Abdurrahman & Abdul Azeem
+  Made by Abdurrahman & Abdul Azeem<br>
+  📧 abdurrahmanomg15@gmail.com | azzeem987@gmail.com
 </footer>
+
+<script>
+function startGame() {
+  window.location.href = "game.html";
+}
+</script>
 
 </body>
 </html>
