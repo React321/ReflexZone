@@ -1,1393 +1,859 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
- 
-<title>ReflexZone – Free Online Reaction, Typing & Memory Games | Train Your Brain</title>
- 
-<!-- Primary Meta Tags -->
-<meta name="title" content="ReflexZone – Free Online Reaction, Typing & Memory Games | Train Your Brain">
-<meta name="description" content="ReflexZone is your ultimate free brain-training hub. Test and improve your reaction time, memory, typing speed, and click speed with 5 free mini-games. No download, no login — play instantly on any device.">
-<meta name="keywords" content="reaction game, reflex test, typing speed test, memory game, CPS test, click per second, free online games, brain training, reaction time test, online reflex game, how fast are your reflexes, typing WPM test, memory challenge online">
-<meta name="author" content="Abdurrahman & Azeem">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://react321.github.io/ReflexZone/">
- 
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://react321.github.io/ReflexZone/">
-<meta property="og:title" content="ReflexZone – Free Online Reaction & Memory Games">
-<meta property="og:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games at ReflexZone. No download needed. Challenge your friends!">
-<meta property="og:image" content="https://react321.github.io/ReflexZone/og-image.png">
- 
-<!-- Twitter Card -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://react321.github.io/ReflexZone/">
-<meta property="twitter:title" content="ReflexZone – Free Online Reaction & Memory Games">
-<meta property="twitter:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games. No download needed.">
-<meta property="twitter:image" content="https://react321.github.io/ReflexZone/og-image.png">
- 
-<!-- Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "ReflexZone",
-  "url": "https://react321.github.io/ReflexZone/",
-  "description": "Free online brain-training games including reaction time test, memory challenge, typing speed test, and CPS clicker.",
-  "author": {
-    "@type": "Person",
-    "name": "Abdurrahman & Azeem"
-  }
-}
-</script>
- 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
- 
-<style>
-:root {
-  --bg: #080810;
-  --bg2: #0d0d1a;
-  --panel: #101020;
-  --border: rgba(255,255,255,0.07);
-  --accent: #4fffce;
-  --accent2: #7b5fff;
-  --accent3: #ff5f87;
-  --text: #f0f0f8;
-  --muted: #7070a0;
-  --card: #13132a;
-}
- 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-}
- 
-/* ── NOISE TEXTURE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
-}
- 
-/* ── LOADER ── */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  transition: opacity 0.6s ease;
-}
-#loader .logo-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: clamp(2rem, 6vw, 3rem);
-  letter-spacing: -1px;
-  background: linear-gradient(120deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 28px;
-}
-.loader-track {
-  width: 180px;
-  height: 2px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.loader-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 2px;
-  animation: fillBar 1.4s cubic-bezier(.4,0,.2,1) forwards;
-}
-@keyframes fillBar { to { width: 100%; } }
-.loader-sub {
-  margin-top: 18px;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
- 
-/* ── SCREENS ── */
-.screen {
-  display: none;
-  position: absolute;
-  inset: 0;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 1;
-  overflow-y: auto;
-}
-.screen.active { display: flex; }
- 
-/* ── PANEL ── */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: clamp(20px, 4vw, 36px);
-  max-width: 600px;
-  width: 100%;
-  max-height: 94vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent2) transparent;
-  position: relative;
-  box-shadow: 0 0 80px rgba(79,255,206,0.04), 0 0 1px rgba(255,255,255,0.1);
-}
-.panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  border-radius: 20px 20px 0 0;
-  opacity: 0.5;
-}
- 
-/* ── TYPOGRAPHY ── */
-h1, h2, h3 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-.page-title {
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  background: linear-gradient(120deg, var(--accent) 0%, var(--accent2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 4px;
-}
-.page-sub {
-  color: var(--muted);
-  font-size: 13px;
-  letter-spacing: 0.5px;
-  margin-bottom: 20px;
-}
-.section-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--muted);
-  margin-bottom: 10px;
-  font-weight: 500;
-}
- 
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 22px;
-  margin: 5px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  transition: transform 0.15s, box-shadow 0.15s;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-.btn:active { transform: scale(0.96); }
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent), #00c9a0);
-  color: #080810;
-}
-.btn-primary:hover { box-shadow: 0 0 24px rgba(79,255,206,0.3); transform: translateY(-1px); }
-.btn-secondary {
-  background: rgba(123,95,255,0.15);
-  color: var(--accent2);
-  border: 1px solid rgba(123,95,255,0.25);
-}
-.btn-secondary:hover { background: rgba(123,95,255,0.25); }
-.btn-danger {
-  background: rgba(255,95,135,0.12);
-  color: var(--accent3);
-  border: 1px solid rgba(255,95,135,0.2);
-}
-.btn-danger:hover { background: rgba(255,95,135,0.22); }
-.btn-back {
-  background: rgba(255,255,255,0.05);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  padding: 10px 18px;
-  margin-top: 12px;
-}
-.btn-back:hover { color: var(--text); background: rgba(255,255,255,0.08); }
- 
-/* ── GAME CARDS (HOME) ── */
-.game-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 16px 0;
-}
-.game-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 18px 14px;
-  cursor: pointer;
-  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
-  text-align: left;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-.game-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(79,255,206,0.2);
-  box-shadow: 0 8px 30px rgba(79,255,206,0.06);
-}
-.game-card:active { transform: scale(0.97); }
-.card-icon { font-size: 26px; margin-bottom: 8px; }
-.card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.card-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
- 
-/* ── DIVIDER ── */
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 20px 0;
-}
- 
-/* ── SEO CONTENT BLOCKS ── */
-.content-block {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 12px;
-  text-align: left;
-}
-.content-block h3 {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 8px;
-  font-family: 'Syne', sans-serif;
-}
-.content-block p {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.7;
-}
-.content-block p + p { margin-top: 7px; }
- 
-/* ── STAT ROW ── */
-.stat-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-.stat-item {
-  flex: 1;
-  background: rgba(79,255,206,0.04);
-  border: 1px solid rgba(79,255,206,0.1);
-  border-radius: 10px;
-  padding: 12px 8px;
-  text-align: center;
-}
-.stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--accent);
-}
-.stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
- 
-/* ── DIFFICULTY BUTTONS ── */
-.diff-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.diff-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 7px 14px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.04);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.15s;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-.diff-btn.selected {
-  background: rgba(79,255,206,0.12);
-  color: var(--accent);
-  border-color: rgba(79,255,206,0.3);
-}
- 
-/* ── REACTION BOX ── */
-#box, #clickBox {
-  width: min(220px, 80vw);
-  height: min(220px, 45vw);
-  background: var(--card);
-  border: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: clamp(15px, 4vw, 18px);
-  margin: 16px auto;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-  letter-spacing: 1px;
-}
-#box.go, #clickBox.go {
-  background: rgba(79,255,206,0.12);
-  border-color: var(--accent);
-  box-shadow: 0 0 40px rgba(79,255,206,0.15);
-  color: var(--accent);
-}
-#box.wait { background: rgba(255,95,135,0.1); border-color: var(--accent3); color: var(--accent3); }
- 
-/* ── RANK BADGE ── */
-#rank {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  min-height: 24px;
-  color: var(--accent);
-}
- 
-/* ── MEMORY GRID ── */
-#memoryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 16px auto;
-  max-width: 300px;
-}
-.memBox {
-  aspect-ratio: 1;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
-  user-select: none;
-}
-.memBox.memActive {
-  background: rgba(79,255,206,0.2);
-  border-color: var(--accent);
-  box-shadow: 0 0 18px rgba(79,255,206,0.2);
-}
-.memBox.memWrong {
-  background: rgba(255,95,135,0.2);
-  border-color: var(--accent3);
-}
- 
-/* ── TYPING INPUT ── */
-#typeInput {
-  width: 100%;
-  padding: 12px 16px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.2s;
-  margin-top: 10px;
-}
-#typeInput:focus { border-color: rgba(79,255,206,0.4); }
- 
-#sentence {
-  font-size: 14px;
-  color: #aaa;
-  line-height: 1.8;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  text-align: left;
-  min-height: 48px;
-  letter-spacing: 0.3px;
-}
- 
-/* ── SCORES BOX ── */
-.scores-box {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-top: 14px;
-  text-align: left;
-}
-.scores-box h4 {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent);
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.score-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  font-size: 12px;
-  color: var(--muted);
-}
-.score-row:last-child { border-bottom: none; }
-.score-best { color: var(--accent); font-weight: 700; }
- 
-/* ── BEST SCORE PILL ── */
-.best-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(79,255,206,0.08);
-  border: 1px solid rgba(79,255,206,0.2);
-  border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  margin: 8px 0;
-  font-family: 'Syne', sans-serif;
-}
- 
-/* ── SHARE ── */
-.share-section { margin-top: 16px; }
-.share-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-.share-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.share-row .btn { font-size: 12px; padding: 9px 14px; margin: 0; }
-.btn-twitter { background: #1d9bf0; color: white; }
-.btn-whatsapp { background: #25D366; color: white; }
-.btn-copy { background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(79,255,206,0.2); }
- 
-/* ── KO-FI ── */
-.kofi-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  padding: 10px 18px;
-  background: rgba(255,95,91,0.12);
-  color: #ff7875;
-  border: 1px solid rgba(255,95,91,0.2);
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  font-family: 'Syne', sans-serif;
-  letter-spacing: 0.3px;
-  transition: transform 0.15s, background 0.15s;
-  touch-action: manipulation;
-}
-.kofi-btn:hover { transform: translateY(-1px); background: rgba(255,95,91,0.2); }
- 
-/* ── STATUS TEXT ── */
-#memoryStatus, #typingResult, #clickInfo {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  min-height: 22px;
-  color: var(--text);
-  margin: 8px 0;
-}
- 
-/* ── FOOTER ── */
-.footer-text {
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.8;
-  margin-top: 20px;
-  opacity: 0.7;
-}
- 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 4px; }
- 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.screen.active .panel { animation: fadeUp 0.3s ease; }
- 
-/* ── TIPS ACCORDION ── */
-.tips-toggle {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 11px;
-  cursor: pointer;
-  padding: 4px 0;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-family: 'DM Sans', sans-serif;
-  touch-action: manipulation;
-}
-.tips-toggle:hover { color: var(--accent); }
-.tips-content { display: none; margin-top: 10px; }
-.tips-content.open { display: block; }
-.tip-item {
-  display: flex;
-  gap: 8px;
-  padding: 5px 0;
-  font-size: 12px;
-  color: var(--muted);
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-.tip-item:last-child { border-bottom: none; }
-.tip-icon { color: var(--accent); font-size: 13px; flex-shrink: 0; }
-</style>
+    <!-- Google tag (gtag.js) - Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CGQK5P59FQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-CGQK5P59FQ');
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="wAN7K3mrfRAQlZc9KTtV5KvM0PPjFgDcooSQASz8akk" />
+    
+    <title>ReflexZone – Free Online Reaction, Typing & Memory Games | Train Your Brain</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="ReflexZone – Free Online Reaction, Typing & Memory Games | Train Your Brain">
+    <meta name="description" content="ReflexZone is your ultimate free brain-training hub. Test and improve your reaction time, memory, typing speed, and click speed with 5 free mini-games. No download, no login — play instantly on any device.">
+    <meta name="keywords" content="reaction game, reflex test, typing speed test, memory game, CPS test, click per second, free online games, brain training, reaction time test, online reflex game, how fast are your reflexes, typing WPM test, memory challenge online">
+    <meta name="author" content="Abdurrahman & Azeem">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://react321.github.io/ReflexZone/">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://react321.github.io/ReflexZone/">
+    <meta property="og:title" content="ReflexZone – Free Online Reaction & Memory Games">
+    <meta property="og:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games at ReflexZone. No download needed. Challenge your friends!">
+    <meta property="og:image" content="https://react321.github.io/ReflexZone/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://react321.github.io/ReflexZone/">
+    <meta property="twitter:title" content="ReflexZone – Free Online Reaction & Memory Games">
+    <meta property="twitter:description" content="How fast are your reflexes? Play free reaction, memory, typing, and CPS games. No download needed.">
+    <meta property="twitter:image" content="https://react321.github.io/ReflexZone/og-image.png">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ReflexZone",
+      "url": "https://react321.github.io/ReflexZone/",
+      "description": "Free online brain-training games including reaction time test, memory challenge, typing speed test, and CPS clicker.",
+      "author": {
+        "@type": "Person",
+        "name": "Abdurrahman & Azeem"
+      }
+    }
+    </script>
+    
+    <!-- Favicon Implementation -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+    :root {
+      --bg: #080810;
+      --bg2: #0d0d1a;
+      --panel: #101020;
+      --border: rgba(255,255,255,0.07);
+      --accent: #4fffce;
+      --accent2: #7b5fff;
+      --accent3: #ff5f87;
+      --text: #f0f0f8;
+      --muted: #7070a0;
+      --card: #13132a;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+    
+    /* ── LOADER ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
+    #loader .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -1px;
+      background: linear-gradient(120deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 28px;
+    }
+    .loader-track {
+      width: 180px;
+      height: 2px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loader-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      animation: fillBar 1.4s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes fillBar { to { width: 100%; } }
+    .loader-sub {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    /* ── SCREENS ── */
+    .screen {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1;
+      overflow-y: auto;
+    }
+    .screen.active { display: flex; }
+    
+    /* ── PANEL ── */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: clamp(20px, 4vw, 36px);
+      max-width: 600px;
+      width: 100%;
+      max-height: 94vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent2) transparent;
+      position: relative;
+      box-shadow: 0 0 80px rgba(79,255,206,0.04), 0 0 1px rgba(255,255,255,0.1);
+    }
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      border-radius: 20px 20px 0 0;
+      opacity: 0.5;
+    }
+    
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .page-title {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      background: linear-gradient(120deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+    .section-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 22px;
+      margin: 5px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #00c9a0);
+      color: #080810;
+    }
+    .btn-primary:hover { box-shadow: 0 0 24px rgba(79,255,206,0.3); transform: translateY(-1px); }
+    .btn-secondary {
+      background: rgba(123,95,255,0.15);
+      color: var(--accent2);
+      border: 1px solid rgba(123,95,255,0.25);
+    }
+    .btn-secondary:hover { background: rgba(123,95,255,0.25); }
+    .btn-danger {
+      background: rgba(255,95,135,0.12);
+      color: var(--accent3);
+      border: 1px solid rgba(255,95,135,0.2);
+    }
+    .btn-danger:hover { background: rgba(255,95,135,0.22); }
+    .btn-back {
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      padding: 10px 18px;
+      margin-top: 12px;
+    }
+    .btn-back:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+    
+    /* ── GAME CARDS (HOME) ── */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 14px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+      text-align: left;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .game-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(79,255,206,0.2);
+      box-shadow: 0 8px 30px rgba(79,255,206,0.06);
+    }
+    .game-card:active { transform: scale(0.97); }
+    .card-icon { font-size: 26px; margin-bottom: 8px; }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .card-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+    
+    /* ── SEO CONTENT BLOCKS ── */
+    .content-block {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      text-align: left;
+    }
+    .content-block h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-family: 'Syne', sans-serif;
+    }
+    .content-block p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .content-block p + p { margin-top: 7px; }
+    
+    /* ── STAT ROW ── */
+    .stat-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .stat-item {
+      flex: 1;
+      background: rgba(79,255,206,0.04);
+      border: 1px solid rgba(79,255,206,0.1);
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    
+    /* ── DIFFICULTY BUTTONS ── */
+    .diff-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .diff-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .diff-btn.selected {
+      background: rgba(79,255,206,0.12);
+      color: var(--accent);
+      border-color: rgba(79,255,206,0.3);
+    }
+    
+    /* ── REACTION BOX ── */
+    #box, #clickBox {
+      width: min(220px, 80vw);
+      height: min(220px, 45vw);
+      background: var(--card);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(15px, 4vw, 18px);
+      margin: 16px auto;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      letter-spacing: 1px;
+    }
+    #box.go, #clickBox.go {
+      background: rgba(79,255,206,0.12);
+      border-color: var(--accent);
+      box-shadow: 0 0 40px rgba(79,255,206,0.15);
+      color: var(--accent);
+    }
+    #box.wait { background: rgba(255,95,135,0.1); border-color: var(--accent3); color: var(--accent3); }
+    
+    /* ── RANK BADGE ── */
+    #rank {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      min-height: 24px;
+      color: var(--accent);
+    }
+    
+    /* ── MEMORY GRID ── */
+    #memoryGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 16px auto;
+      max-width: 300px;
+    }
+    .memBox {
+      aspect-ratio: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .memBox.memActive {
+      background: rgba(79,255,206,0.2);
+      border-color: var(--accent);
+      box-shadow: 0 0 18px rgba(79,255,206,0.2);
+    }
+    .memBox.memWrong {
+      background: rgba(255,95,135,0.2);
+      border-color: var(--accent3);
+    }
+    
+    /* ── TYPING INPUT ── */
+    #typeInput {
+      width: 100%;
+      padding: 12px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-top: 10px;
+    }
+    #typeInput:focus { border-color: rgba(79,255,206,0.4); }
+    
+    #sentence {
+      font-size: 14px;
+      color: #aaa;
+      line-height: 1.8;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: left;
+      min-height: 48px;
+      letter-spacing: 0.3px;
+    }
+    
+    /* ── SCORES BOX ── */
+    .scores-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      text-align: left;
+    }
+    .scores-box h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .score-row:last-child { border-bottom: none; }
+    .score-best { color: var(--accent); font-weight: 700; }
+    
+    /* ── BEST SCORE PILL ── */
+    .best-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79,255,206,0.08);
+      border: 1px solid rgba(79,255,206,0.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 8px 0;
+      font-family: 'Syne', sans-serif;
+    }
+    
+    /* ── SHARE ── */
+    .share-section { margin-top: 16px; }
+    .share-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .share-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .share-row .btn { font-size: 12px; padding: 9px 14px; margin: 0; }
+    .btn-twitter { background: #1d9bf0; color: white; }
+    .btn-whatsapp { background: #25D366; color: white; }
+    .btn-copy { background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(79,255,206,0.2); }
+    
+    /* ── KO-FI ── */
+    .kofi-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 10px 18px;
+      background: rgba(255,95,91,0.12);
+      color: #ff7875;
+      border: 1px solid rgba(255,95,91,0.2);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.3px;
+      transition: transform 0.15s, background 0.15s;
+      touch-action: manipulation;
+    }
+    .kofi-btn:hover { transform: translateY(-1px); background: rgba(255,95,91,0.2); }
+    
+    /* ── STATUS TEXT ── */
+    #memoryStatus, #typingResult, #clickInfo {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      min-height: 22px;
+      color: var(--text);
+      margin: 8px 0;
+    }
+    
+    /* ── FOOTER ── */
+    .footer-text {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-top: 20px;
+      opacity: 0.7;
+    }
+    
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 4px; }
+    
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .screen.active .panel { animation: fadeUp 0.3s ease; }
+    
+    /* ── TIPS ACCORDION ── */
+    .tips-toggle {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 11px;
+      cursor: pointer;
+      padding: 4px 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      touch-action: manipulation;
+    }
+    .tips-toggle:hover { color: var(--accent); }
+    .tips-content { display: none; margin-top: 10px; }
+    .tips-content.open { display: block; }
+    .tip-item {
+      display: flex;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .tip-item:last-child { border-bottom: none; }
+    .tip-icon { color: var(--accent); font-size: 13px; flex-shrink: 0; }
+    </style>
 </head>
 <body>
- 
-<!-- LOADER -->
-<div id="loader">
-  <div class="logo-text">⚡ ReflexZone</div>
-  <div class="loader-track"><div class="loader-fill"></div></div>
-  <p class="loader-sub">Warming up your reflexes</p>
+    
+    <!-- LOADER -->
+    <div id="loader">
+      <div class="logo-text">⚡ ReflexZone</div>
+      <div class="loader-track"><div class="loader-fill"></div></div>
+      <p class="loader-sub">Warming up your reflexes</p>
+    </div>
+    
+    <!-- ═══════════════ HOME ═══════════════ -->
+    <div id="home" class="screen active">
+      <div class="panel">
+        <div class="page-title">⚡ ReflexZone</div>
+        <p class="page-sub" id="homeMsg">Train your brain. Beat your best.</p>
+    
+        <div class="stat-row">
+          <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">Games</div></div>
+          <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Difficulties</div></div>
+          <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
+        </div>
+    
+        <hr class="divider">
+    
+        <p class="section-label">Choose your challenge</p>
+        <div class="game-grid">
+          <div class="game-card" onclick="show('game')">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">Reaction Test</div>
+            <div class="card-desc">How fast can you click when the screen turns green?</div>
+          </div>
+          <div class="game-card" onclick="openGame('memory')">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">Memory Game</div>
+            <div class="card-desc">Watch the pattern, then repeat it from memory.</div>
+          </div>
+          <div class="game-card" onclick="show('typingGame'); startTyping()">
+            <div class="card-icon">⌨️</div>
+            <div class="card-title">Typing Speed</div>
+            <div class="card-desc">Measure your WPM and accuracy under pressure.</div>
+          </div>
+          <div class="game-card" onclick="show('arcade')">
+            <div class="card-icon">🎮</div>
+            <div class="card-title">All Games</div>
+            <div class="card-desc">Browse all games including 1s and 5s CPS tests.</div>
+          </div>
+        </div>
+    
+        <hr class="divider">
+    
+        <!-- SEO CONTENT -->
+        <div class="content-block">
+          <h3>🚀 What is ReflexZone?</h3>
+          <p>ReflexZone is a free, browser-based collection of reflex and brain training games designed to help you measure and improve your reaction time, working memory, typing speed, and click speed. Whether you're a gamer looking to sharpen your competitive edge, a student training focus, or just curious how fast you really are — ReflexZone has a challenge for you.</p>
+          <p>All five games work instantly in your browser with zero downloads or sign-ups. Your scores are saved locally so you can track your progress every session.</p>
+        </div>
+    
+        <div class="content-block" style="margin-top:10px;">
+          <h3>🎯 Why Train Your Reflexes?</h3>
+          <p>Reaction time is a measurable cognitive skill that can be improved with consistent practice. Studies show that regular reflex training can help reduce response latency, improve hand-eye coordination, and even enhance general focus and attention span. The average human reaction time is around 250ms — professional gamers and athletes often score below 180ms.</p>
+          <p>Regular short sessions (even 5 minutes a day) on reflex and memory games have been shown to produce meaningful improvements within a few weeks of practice.</p>
+        </div>
+    
+        <button class="tips-toggle" onclick="toggleTips('homeTips', this)">▸ Quick Tips</button>
+        <div class="tips-content" id="homeTips">
+          <div class="tip-item"><span class="tip-icon">⚡</span><span>Warm up with Easy difficulty before going Hard.</span></div>
+          <div class="tip-item"><span class="tip-icon">🧠</span><span>Memory patterns get easier when you hum a beat.</span></div>
+          <div class="tip-item"><span class="tip-icon">⌨️</span><span>For typing, prioritize accuracy first — speed follows.</span></div>
+          <div class="tip-item"><span class="tip-icon">🖱️</span><span>For CPS, use two fingers alternating on the button.</span></div>
+        </div>
+    
+        <hr class="divider">
+    
+        <div style="text-align:center;">
+          <a href="https://ko-fi.com/reflexzone" target="_blank" class="kofi-btn">☕ Support us on Ko-fi</a>
+        </div>
+    
+        <p class="footer-text" style="text-align:center;">
+          © 2026 ReflexZone · Created by Abdurrahman &amp; Azeem<br>
+          abdurrahmanomg15@gmail.com · azzeem987@gmail.com
+        </p>
+      </div>
+    </div>
+    
+    <!-- ═══════════════ REACTION ═══════════════ -->
+    <div id="game" class="screen">
+      <div class="panel">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:22px;">⚡</span>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Reaction Test</h2>
+        </div>
+        <p class="page-sub">Click the moment the box turns green. Every millisecond counts.</p>
+    
+        <div class="diff-row">
+          <button class="diff-btn selected" onclick="setReactionDiff('easy',this)">Easy</button>
+          <button class="diff-btn" onclick="setReactionDiff('medium',this)">Medium</button>
+          <button class="diff-btn" onclick="setReactionDiff('hard',this)">Hard</button>
+        </div>
+        <p id="reactionDiffInfo" style="font-size:11px;color:var(--muted);margin:0 0 6px;">Easy: longer green window</p>
+    
+        <div id="box">TAP TO START</div>
+        <p id="rank"></p>
+    
+        <div id="reactionBestWrap" style="display:none;" class="best-pill">🏆 <span id="reactionBestVal"></span></div>
+    
+        <div id="reactionHistory" style="display:none;" class="scores-box">
+          <h4>📊 Last 5 Attempts</h4>
+          <div id="reactionHistoryList"></div>
+        </div>
+    
+        <div class="share-section" id="shareReaction" style="display:none;">
+          <p class="share-label">Challenge friends</p>
+          <div class="share-row">
+            <button class="btn btn-twitter" onclick="shareTwitter('reaction')">X / Twitter</button>
+            <button class="btn btn-whatsapp" onclick="shareWhatsApp('reaction')">WhatsApp</button>
+            <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+          </div>
+        </div>
+    
+        <!-- SEO content -->
+        <div class="content-block" style="margin-top:14px;">
+          <h3>How the Reaction Test works</h3>
+          <p>Press Start, wait for the red screen to turn green, then tap as fast as you can. Clicking too early resets the attempt. Your time is measured in milliseconds — the lower, the better. Scores under 200ms are considered exceptional. A rating badge shows after every attempt so you can see exactly where you stand.</p>
+        </div>
+    
+        <button class="btn btn-back" onclick="show('home')">← Back to Home</button>
+      </div>
+    </div>
+    
+    <!-- ═══════════════ ARCADE ═══════════════ -->
+    <div id="arcade" class="screen">
+      <div class="panel">
+        <div class="page-title" style="font-size:1.6rem;">🎮 Arcade Hub</div>
+        <p class="page-sub">All five ReflexZone challenges in one place.</p>
+    
+        <div class="game-grid">
+          <div class="game-card" onclick="openGame('reaction')">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">Reaction</div>
+            <div class="card-desc">Tap the instant it goes green.</div>
+          </div>
+          <div class="game-card" onclick="openGame('memory')">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">Memory</div>
+            <div class="card-desc">Repeat the flashing pattern.</div>
+          </div>
+          <div class="game-card" onclick="openGame('typing')">
+            <div class="card-icon">⌨️</div>
+            <div class="card-title">Typing</div>
+            <div class="card-desc">Max WPM, zero mistakes.</div>
+          </div>
+          <div class="game-card" onclick="openGame('click1')">
+            <div class="card-icon">鼠标</div>
+            <div class="card-title">1-Second CPS</div>
+            <div class="card-desc">Click as fast as possible in 1s.</div>
+          </div>
+          <div class="game-card" onclick="openGame('click5')" style="grid-column:span 2;">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">5-Second CPS</div>
+            <div class="card-desc">Sustain your click rate over 5 full seconds.</div>
+          </div>
+        </div>
+    
+        <div class="content-block" style="margin-top:8px;">
+          <h3>About the CPS Challenge</h3>
+          <p>CPS stands for Clicks Per Second — a popular benchmark for gamers and competitive clickers. The 1-second test measures your peak burst speed, while the 5-second test reveals how well you can sustain that speed. World-record CPS scores exceed 14 clicks per second. Most casual players average between 6 and 9 CPS.</p>
+        </div>
+    
+        <button class="btn btn-back" onclick="show('home')">← Back to Home</button>
+      </div>
+    </div>
+    
+    <!-- ═══════════════ MEMORY ═══════════════ -->
+    <div id="memoryGame" class="screen">
+      <div class="panel">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:22px;">🧠</span>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Memory Game</h2>
+        </div>
+        <p class="page-sub">Watch the tiles flash, then tap them in the same order.</p>
+    
+        <div class="diff-row">
+          <button class="diff-btn selected" onclick="setMemoryDiff('easy',this)">Easy (5)</button>
+          <button class="diff-btn" onclick="setMemoryDiff('medium',this)">Medium (7)</button>
+          <button class="diff-btn" onclick="setMemoryDiff('hard',this)">Hard (10)</button>
+        </div>
+    
+        <p id="memoryStatus">Press Start to begin</p>
+        <div id="memoryGrid"></div>
+    
+        <div id="memoryScoreBox" style="display:none;" class="scores-box">
+          <h4>🏆 Personal Best</h4>
+          <div id="memoryBestDisplay"></div>
+        </div>
+    
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <button class="btn btn-primary" onclick="startMemory()">▶ Start</button>
+        </div>
+    
+        <div class="share-section" id="shareMemory" style="display:none;">
+          <p class="share-label">Challenge friends</p>
+          <div class="share-row">
+            <button class="btn btn-twitter" onclick="shareTwitter('memory')">X / Twitter</button>
+            <button class="btn btn-whatsapp" onclick="shareWhatsApp('memory')">WhatsApp</button>
+            <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+          </div>
+        </div>
+    
+        <div class="content-block" style="margin-top:14px;">
+          <h3>How Memory Training helps you</h3>
+          <p>Working memory is the mental workspace your brain uses to hold and process information in real time. Training it through pattern-repetition tasks — like this game — has been linked to improved focus, faster problem-solving, and better performance in fast-paced games. Hard mode (10 tiles) is a genuine challenge even for experienced players.</p>
+        </div>
+    
+        <button class="btn btn-back" onclick="show('arcade')">← Back to Arcade</button>
+      </div>
+    </div>
+    
+    <!-- ═══════════════ TYPING ═══════════════ -->
+    <div id="typingGame" class="screen">
+      <div class="panel">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:22px;">⌨️</span>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Typing Speed Test</h2>
+        </div>
+        <p class="page-sub">Type the sentence exactly as shown and see your WPM.</p>
+    
+        <div class="diff-row">
+          <button class="diff-btn selected" onclick="setTypingDiff('easy',this)">Easy</button>
+          <button class="diff-btn" onclick="setTypingDiff('medium',this)">Medium</button>
+          <button class="diff-btn" onclick="setTypingDiff('hard',this)">Hard</button>
+        </div>
+    
+        <p id="sentence">Press New Text to begin</p>
+        <input id="typeInput" oninput="checkTyping()" placeholder="Start typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+        <p id="typingResult" style="margin-top:8px;"></p>
+    
+        <div id="typingHistory" style="display:none;" class="scores-box">
+          <h4>📊 Last 5 Attempts</h4>
+          <div id="typingHistoryList"></div>
+        </div>
+        <div id="typingBestWrap" style="display:none;" class="best-pill">🏆 <span id="typingBestVal"></span></div>
+    
+        <div class="share-section" id="shareTyping" style="display:none;">
+          <p class="share-label">Challenge friends</p>
+          <div class="share-row">
+            <button class="btn btn-twitter" onclick="shareTwitter('typing')">X / Twitter</button>
+            <button class="btn btn-whatsapp" onclick="shareWhatsApp('typing')">WhatsApp</button>
+            <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+          </div>
+        </div>
+    </div>
 </div>
- 
-<!-- ═══════════════ HOME ═══════════════ -->
-<div id="home" class="screen active">
-  <div class="panel">
-    <div class="page-title">⚡ ReflexZone</div>
-    <p class="page-sub" id="homeMsg">Train your brain. Beat your best.</p>
- 
-    <div class="stat-row">
-      <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">Games</div></div>
-      <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Difficulties</div></div>
-      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Always</div></div>
-    </div>
- 
-    <hr class="divider">
- 
-    <p class="section-label">Choose your challenge</p>
-    <div class="game-grid">
-      <div class="game-card" onclick="show('game')">
-        <div class="card-icon">⚡</div>
-        <div class="card-title">Reaction Test</div>
-        <div class="card-desc">How fast can you click when the screen turns green?</div>
-      </div>
-      <div class="game-card" onclick="openGame('memory')">
-        <div class="card-icon">🧠</div>
-        <div class="card-title">Memory Game</div>
-        <div class="card-desc">Watch the pattern, then repeat it from memory.</div>
-      </div>
-      <div class="game-card" onclick="show('typingGame'); startTyping()">
-        <div class="card-icon">⌨️</div>
-        <div class="card-title">Typing Speed</div>
-        <div class="card-desc">Measure your WPM and accuracy under pressure.</div>
-      </div>
-      <div class="game-card" onclick="show('arcade')">
-        <div class="card-icon">🎮</div>
-        <div class="card-title">All Games</div>
-        <div class="card-desc">Browse all games including 1s and 5s CPS tests.</div>
-      </div>
-    </div>
- 
-    <hr class="divider">
- 
-    <!-- SEO CONTENT -->
-    <div class="content-block">
-      <h3>🚀 What is ReflexZone?</h3>
-      <p>ReflexZone is a free, browser-based collection of reflex and brain training games designed to help you measure and improve your reaction time, working memory, typing speed, and click speed. Whether you're a gamer looking to sharpen your competitive edge, a student training focus, or just curious how fast you really are — ReflexZone has a challenge for you.</p>
-      <p>All five games work instantly in your browser with zero downloads or sign-ups. Your scores are saved locally so you can track your progress every session.</p>
-    </div>
- 
-    <div class="content-block" style="margin-top:10px;">
-      <h3>🎯 Why Train Your Reflexes?</h3>
-      <p>Reaction time is a measurable cognitive skill that can be improved with consistent practice. Studies show that regular reflex training can help reduce response latency, improve hand-eye coordination, and even enhance general focus and attention span. The average human reaction time is around 250ms — professional gamers and athletes often score below 180ms.</p>
-      <p>Regular short sessions (even 5 minutes a day) on reflex and memory games have been shown to produce meaningful improvements within a few weeks of practice.</p>
-    </div>
- 
-    <button class="tips-toggle" onclick="toggleTips('homeTips', this)">▸ Quick Tips</button>
-    <div class="tips-content" id="homeTips">
-      <div class="tip-item"><span class="tip-icon">⚡</span><span>Warm up with Easy difficulty before going Hard.</span></div>
-      <div class="tip-item"><span class="tip-icon">🧠</span><span>Memory patterns get easier when you hum a beat.</span></div>
-      <div class="tip-item"><span class="tip-icon">⌨️</span><span>For typing, prioritize accuracy first — speed follows.</span></div>
-      <div class="tip-item"><span class="tip-icon">🖱️</span><span>For CPS, use two fingers alternating on the button.</span></div>
-    </div>
- 
-    <hr class="divider">
- 
-    <div style="text-align:center;">
-      <a href="https://ko-fi.com/reflexzone" target="_blank" class="kofi-btn">☕ Support us on Ko-fi</a>
-    </div>
- 
-    <p class="footer-text" style="text-align:center;">
-      © 2026 ReflexZone · Created by Abdurrahman &amp; Azeem<br>
-      abdurrahmanomg15@gmail.com · azzeem987@gmail.com
-    </p>
-  </div>
-</div>
- 
-<!-- ═══════════════ REACTION ═══════════════ -->
-<div id="game" class="screen">
-  <div class="panel">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-      <span style="font-size:22px;">⚡</span>
-      <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Reaction Test</h2>
-    </div>
-    <p class="page-sub">Click the moment the box turns green. Every millisecond counts.</p>
- 
-    <div class="diff-row">
-      <button class="diff-btn selected" onclick="setReactionDiff('easy',this)">Easy</button>
-      <button class="diff-btn" onclick="setReactionDiff('medium',this)">Medium</button>
-      <button class="diff-btn" onclick="setReactionDiff('hard',this)">Hard</button>
-    </div>
-    <p id="reactionDiffInfo" style="font-size:11px;color:var(--muted);margin:0 0 6px;">Easy: longer green window</p>
- 
-    <div id="box">TAP TO START</div>
-    <p id="rank"></p>
- 
-    <div id="reactionBestWrap" style="display:none;" class="best-pill">🏆 <span id="reactionBestVal"></span></div>
- 
-    <div id="reactionHistory" style="display:none;" class="scores-box">
-      <h4>📊 Last 5 Attempts</h4>
-      <div id="reactionHistoryList"></div>
-    </div>
- 
-    <div class="share-section" id="shareReaction" style="display:none;">
-      <p class="share-label">Challenge friends</p>
-      <div class="share-row">
-        <button class="btn btn-twitter" onclick="shareTwitter('reaction')">X / Twitter</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp('reaction')">WhatsApp</button>
-        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-      </div>
-    </div>
- 
-    <!-- SEO content -->
-    <div class="content-block" style="margin-top:14px;">
-      <h3>How the Reaction Test works</h3>
-      <p>Press Start, wait for the red screen to turn green, then tap as fast as you can. Clicking too early resets the attempt. Your time is measured in milliseconds — the lower, the better. Scores under 200ms are considered exceptional. A rating badge shows after every attempt so you can see exactly where you stand.</p>
-    </div>
- 
-    <button class="btn btn-back" onclick="show('home')">← Back to Home</button>
-  </div>
-</div>
- 
-<!-- ═══════════════ ARCADE ═══════════════ -->
-<div id="arcade" class="screen">
-  <div class="panel">
-    <div class="page-title" style="font-size:1.6rem;">🎮 Arcade Hub</div>
-    <p class="page-sub">All five ReflexZone challenges in one place.</p>
- 
-    <div class="game-grid">
-      <div class="game-card" onclick="openGame('reaction')">
-        <div class="card-icon">⚡</div>
-        <div class="card-title">Reaction</div>
-        <div class="card-desc">Tap the instant it goes green.</div>
-      </div>
-      <div class="game-card" onclick="openGame('memory')">
-        <div class="card-icon">🧠</div>
-        <div class="card-title">Memory</div>
-        <div class="card-desc">Repeat the flashing pattern.</div>
-      </div>
-      <div class="game-card" onclick="openGame('typing')">
-        <div class="card-icon">⌨️</div>
-        <div class="card-title">Typing</div>
-        <div class="card-desc">Max WPM, zero mistakes.</div>
-      </div>
-      <div class="game-card" onclick="openGame('click1')">
-        <div class="card-icon">🖱️</div>
-        <div class="card-title">1-Second CPS</div>
-        <div class="card-desc">Click as fast as possible in 1s.</div>
-      </div>
-      <div class="game-card" onclick="openGame('click5')" style="grid-column:span 2;">
-        <div class="card-icon">⚡</div>
-        <div class="card-title">5-Second CPS</div>
-        <div class="card-desc">Sustain your click rate over 5 full seconds.</div>
-      </div>
-    </div>
- 
-    <div class="content-block" style="margin-top:8px;">
-      <h3>About the CPS Challenge</h3>
-      <p>CPS stands for Clicks Per Second — a popular benchmark for gamers and competitive clickers. The 1-second test measures your peak burst speed, while the 5-second test reveals how well you can sustain that speed. World-record CPS scores exceed 14 clicks per second. Most casual players average between 6 and 9 CPS.</p>
-    </div>
- 
-    <button class="btn btn-back" onclick="show('home')">← Back to Home</button>
-  </div>
-</div>
- 
-<!-- ═══════════════ MEMORY ═══════════════ -->
-<div id="memoryGame" class="screen">
-  <div class="panel">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-      <span style="font-size:22px;">🧠</span>
-      <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Memory Game</h2>
-    </div>
-    <p class="page-sub">Watch the tiles flash, then tap them in the same order.</p>
- 
-    <div class="diff-row">
-      <button class="diff-btn selected" onclick="setMemoryDiff('easy',this)">Easy (5)</button>
-      <button class="diff-btn" onclick="setMemoryDiff('medium',this)">Medium (7)</button>
-      <button class="diff-btn" onclick="setMemoryDiff('hard',this)">Hard (10)</button>
-    </div>
- 
-    <p id="memoryStatus">Press Start to begin</p>
-    <div id="memoryGrid"></div>
- 
-    <div id="memoryScoreBox" style="display:none;" class="scores-box">
-      <h4>🏆 Personal Best</h4>
-      <div id="memoryBestDisplay"></div>
-    </div>
- 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-      <button class="btn btn-primary" onclick="startMemory()">▶ Start</button>
-    </div>
- 
-    <div class="share-section" id="shareMemory" style="display:none;">
-      <p class="share-label">Challenge friends</p>
-      <div class="share-row">
-        <button class="btn btn-twitter" onclick="shareTwitter('memory')">X / Twitter</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp('memory')">WhatsApp</button>
-        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-      </div>
-    </div>
- 
-    <div class="content-block" style="margin-top:14px;">
-      <h3>How Memory Training helps you</h3>
-      <p>Working memory is the mental workspace your brain uses to hold and process information in real time. Training it through pattern-repetition tasks — like this game — has been linked to improved focus, faster problem-solving, and better performance in fast-paced games. Hard mode (10 tiles) is a genuine challenge even for experienced players.</p>
-    </div>
- 
-    <button class="btn btn-back" onclick="show('arcade')">← Back to Arcade</button>
-  </div>
-</div>
- 
-<!-- ═══════════════ TYPING ═══════════════ -->
-<div id="typingGame" class="screen">
-  <div class="panel">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-      <span style="font-size:22px;">⌨️</span>
-      <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;">Typing Speed Test</h2>
-    </div>
-    <p class="page-sub">Type the sentence exactly as shown and see your WPM.</p>
- 
-    <div class="diff-row">
-      <button class="diff-btn selected" onclick="setTypingDiff('easy',this)">Easy</button>
-      <button class="diff-btn" onclick="setTypingDiff('medium',this)">Medium</button>
-      <button class="diff-btn" onclick="setTypingDiff('hard',this)">Hard</button>
-    </div>
- 
-    <p id="sentence">Press New Text to begin</p>
-    <input id="typeInput" oninput="checkTyping()" placeholder="Start typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-    <p id="typingResult" style="margin-top:8px;"></p>
- 
-    <div id="typingHistory" style="display:none;" class="scores-box">
-      <h4>📊 Last 5 Attempts</h4>
-      <div id="typingHistoryList"></div>
-    </div>
-    <div id="typingBestWrap" style="display:none;" class="best-pill">🏆 <span id="typingBestVal"></span></div>
- 
-    <div class="share-section" id="shareTyping" style="display:none;">
-      <p class="share-label">Challenge friends</p>
-      <div class="share-row">
-        <button class="btn btn-twitter" onclick="shareTwitter('typing')">X / Twitter</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp('typing')">WhatsApp</button>
-        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-      </div>
-    </div>
- 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-      <button class="btn btn-primary" onclick="startTyping()">🔄 New Text</button>
-    </div>
- 
-    <div class="content-block" style="margin-top:14px;">
-      <h3>What's a good typing speed?</h3>
-      <p>The average adult types between 40–55 WPM. Proficient typists reach 70–90 WPM, and professional transcriptionists often exceed 100 WPM. If you're a developer or power user aiming for efficiency, targeting 80+ WPM is a great goal. Hard mode sentences include longer, more complex vocabulary to push your limits further.</p>
-    </div>
- 
-    <button class="btn btn-back" onclick="show('arcade')">← Back to Arcade</button>
-  </div>
-</div>
- 
-<!-- ═══════════════ CPS ═══════════════ -->
-<div id="clickGame" class="screen">
-  <div class="panel">
-    <h2 id="clickTitle" style="font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:4px;">CPS Challenge</h2>
-    <p class="page-sub">Click or tap as many times as you can before time runs out.</p>
- 
-    <div id="clickBox">CLICK FAST!</div>
-    <p id="clickInfo"></p>
- 
-    <div id="cpsHistory" style="display:none;" class="scores-box">
-      <h4>📊 Last 5 Attempts</h4>
-      <div id="cpsHistoryList"></div>
-    </div>
-    <div id="cpsBestWrap" style="display:none;" class="best-pill">🏆 <span id="cpsBestVal"></span></div>
- 
-    <div class="share-section" id="shareCPS" style="display:none;">
-      <p class="share-label">Challenge friends</p>
-      <div class="share-row">
-        <button class="btn btn-twitter" onclick="shareTwitter('cps')">X / Twitter</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp('cps')">WhatsApp</button>
-        <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
-      </div>
-    </div>
- 
-    <button class="btn btn-back" onclick="show('arcade')">← Back to Arcade</button>
-  </div>
-</div>
- 
-<script>
-/* ──────────────────────────────────────────
-   LOADER
-────────────────────────────────────────── */
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    const l = document.getElementById("loader");
-    l.style.opacity = "0";
-    setTimeout(() => l.style.display = "none", 600);
-  }, 1500);
-});
- 
-/* ──────────────────────────────────────────
-   UNIFIED POINTER EVENT HELPER
-   Fires callback once per interaction, works on mobile & desktop.
-   Prevents ghost-click / double-fire bugs.
-────────────────────────────────────────── */
-function onTap(element, callback) {
-  let lastTouch = 0;
-  element.addEventListener("touchend", (e) => {
-    e.preventDefault();          // block the ghost mouse click
-    const now = Date.now();
-    if (now - lastTouch < 100) return;   // debounce rapid taps
-    lastTouch = now;
-    callback(e);
-  }, { passive: false });
-  element.addEventListener("click", (e) => {
-    // If a touch fired recently, skip the mouse click
-    if (Date.now() - lastTouch < 300) return;
-    callback(e);
-  });
-}
- 
-/* ──────────────────────────────────────────
-   SOUND
-────────────────────────────────────────── */
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx;
- 
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  return audioCtx;
-}
- 
-function playSound(type) {
-  try {
-    const ctx = getAudioCtx();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    if (type === "click") {
-      o.frequency.value = 600;
-      g.gain.setValueAtTime(0.12, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-      o.start(); o.stop(ctx.currentTime + 0.08);
-    } else if (type === "win") {
-      o.frequency.setValueAtTime(500, ctx.currentTime);
-      o.frequency.setValueAtTime(700, ctx.currentTime + 0.1);
-      o.frequency.setValueAtTime(900, ctx.currentTime + 0.2);
-      g.gain.setValueAtTime(0.18, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      o.start(); o.stop(ctx.currentTime + 0.4);
-    } else if (type === "fail") {
-      o.type = "sawtooth";
-      o.frequency.setValueAtTime(300, ctx.currentTime);
-      o.frequency.setValueAtTime(150, ctx.currentTime + 0.15);
-      g.gain.setValueAtTime(0.18, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
-      o.start(); o.stop(ctx.currentTime + 0.3);
-    } else if (type === "go") {
-      o.frequency.setValueAtTime(800, ctx.currentTime);
-      g.gain.setValueAtTime(0.2, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-      o.start(); o.stop(ctx.currentTime + 0.2);
-    }
-  } catch (e) {}
-}
- 
-/* ──────────────────────────────────────────
-   NAVIGATION
-────────────────────────────────────────── */
-function show(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
- 
-/* ──────────────────────────────────────────
-   HOME MESSAGES
-────────────────────────────────────────── */
-const homeMessages = [
-  "Train your brain. Beat your best.",
-  "Every millisecond counts.",
-  "How fast are your reflexes?",
-  "Speed wins. Focus wins more.",
-  "Your reaction time is waiting.",
-  "Challenge friends. Prove it.",
-  "Sharpen your mind daily.",
-  "Elite reflexes are built here.",
-  "Reaction is a skill. Train it.",
-  "Never stop getting faster."
-];
-setInterval(() => {
-  const el = document.getElementById("homeMsg");
-  if (el) el.innerText = homeMessages[Math.floor(Math.random() * homeMessages.length)];
-}, 3500);
- 
-/* ──────────────────────────────────────────
-   TIPS TOGGLE
-────────────────────────────────────────── */
-function toggleTips(id, btn) {
-  const el = document.getElementById(id);
-  el.classList.toggle("open");
-  btn.textContent = el.classList.contains("open") ? "▾ Quick Tips" : "▸ Quick Tips";
-}
- 
-/* ──────────────────────────────────────────
-   LOCAL STORAGE SCORES
-────────────────────────────────────────── */
-function getHS(key)       { return JSON.parse(localStorage.getItem("rz_" + key) || "[]"); }
-function saveHS(key, arr) { localStorage.setItem("rz_" + key, JSON.stringify(arr)); }
- 
-function addScore(key, value) {
-  let arr = getHS(key);
-  arr.unshift(value);
-  if (arr.length > 5) arr = arr.slice(0, 5);
-  saveHS(key, arr);
-  return arr;
-}
- 
-function getBest(key, lowerIsBetter) {
-  const arr = getHS(key);
-  if (!arr.length) return null;
-  return lowerIsBetter ? Math.min(...arr) : Math.max(...arr);
-}
- 
-function renderHistory(listId, key, suffix, lowerIsBetter) {
-  const arr = getHS(key);
-  if (!arr.length) return;
-  const best = lowerIsBetter ? Math.min(...arr) : Math.max(...arr);
-  const html = arr.map((v, i) => {
-    const isBest = v === best;
-    return `<div class="score-row"><span>#${i + 1}</span><span class="${isBest ? 'score-best' : ''}">${v}${suffix}${isBest ? " 🏆" : ""}</span></div>`;
-  }).join("");
-  document.getElementById(listId).innerHTML = html;
-  document.getElementById(listId).parentElement.style.display = "block";
-}
- 
-/* ──────────────────────────────────────────
-   ROUTER
-────────────────────────────────────────── */
-let mode = "";
- 
-function openGame(g) {
-  if (g === "reaction") show("game");
-  if (g === "memory")   { show("memoryGame"); setupMemory(); }
-  if (g === "typing")   { show("typingGame"); startTyping(); }
-  if (g === "click1")   startCPS(1);
-  if (g === "click5")   startCPS(5);
-}
- 
-/* ──────────────────────────────────────────
-   DIFFICULTY
-────────────────────────────────────────── */
-let reactionDiff = "easy";
-let memoryDiff   = "easy";
-let typingDiff   = "easy";
-let memoryLength = 5;
- 
-function setDiffBtn(btn) {
-  btn.parentElement.querySelectorAll(".diff-btn").forEach(b => b.classList.remove("selected"));
-  btn.classList.add("selected");
-}
- 
-function setReactionDiff(d, btn) {
-  reactionDiff = d;
-  setDiffBtn(btn);
-  const info = { easy: "Easy: longer green window", medium: "Medium: standard timing", hard: "Hard: blink and you miss it" };
-  document.getElementById("reactionDiffInfo").innerText = info[d];
-}
- 
-function setMemoryDiff(d, btn) {
-  memoryDiff   = d;
-  memoryLength = d === "easy" ? 5 : d === "medium" ? 7 : 10;
-  setDiffBtn(btn);
-}
- 
-function setTypingDiff(d, btn) {
-  typingDiff = d;
-  setDiffBtn(btn);
-}
- 
-/* ──────────────────────────────────────────
-   CPS GAME
-────────────────────────────────────────── */
-let cpsClicks = 0, cpsRunning = false, allowClick = false;
- 
-function startCPS(sec) {
-  show("clickGame");
-  document.getElementById("shareCPS").style.display = "none";
-  document.getElementById("cpsBestWrap").style.display = "none";
-  document.getElementById("clickTitle").innerText = sec === 1 ? "⚡ 1-Second CPS" : "⚡ 5-Second CPS";
-  mode        = sec;
-  cpsClicks   = 0;
-  cpsRunning  = false;
-  allowClick  = false;
- 
-  const box  = document.getElementById("clickBox");
-  const info = document.getElementById("clickInfo");
-  box.classList.remove("go");
-  info.innerText = "";
-  box.innerText  = "3";
- 
-  let count = 3;
-  const countdown = setInterval(() => {
-    count--;
-    if (count > 0)  { box.innerText = count; playSound("click"); }
-    if (count === 0) { box.innerText = "GO!"; }
-    if (count < 0) {
-      clearInterval(countdown);
-      cpsRunning = cpsClicks = 0;
-      cpsClicks  = 0;
-      cpsRunning = true;
-      allowClick = true;
-      box.innerText = "CLICK!";
-      box.classList.add("go");
-      playSound("go");
- 
-      setTimeout(() => {
-        cpsRunning = false;
-        allowClick = false;
-        const cps = parseFloat((cpsClicks / sec).toFixed(2));
-        box.innerText = "DONE";
-        box.classList.remove("go");
-        info.innerText = `Clicks: ${cpsClicks} — CPS: ${cps}`;
-        playSound("win");
- 
-        addScore("cps", cps);
-        const best = getBest("cps", false);
-        if (best) {
-          document.getElementById("cpsBestVal").innerText = "Best CPS: " + best;
-          document.getElementById("cpsBestWrap").style.display = "inline-flex";
-        }
-        renderHistory("cpsHistoryList", "cps", " CPS", false);
-        lastScores.cps = cpsClicks + " clicks | " + cps + " CPS";
-        document.getElementById("shareCPS").style.display = "block";
-      }, sec * 1000);
-    }
-  }, 1000);
-}
- 
-// CPS click — unified tap handler
-(function() {
-  const clickBox = document.getElementById("clickBox");
-  let lastTouch = 0;
-  clickBox.addEventListener("touchend", (e) => {
-    e.preventDefault();
-    const now = Date.now();
-    if (now - lastTouch < 60) return;
-    lastTouch = now;
-    if (cpsRunning && allowClick) { cpsClicks++; playSound("click"); }
-  }, { passive: false });
-  clickBox.addEventListener("click", () => {
-    if (Date.now() - lastTouch < 300) return;
-    if (cpsRunning && allowClick) { cpsClicks++; playSound("click"); }
-  });
-})();
- 
-/* ──────────────────────────────────────────
-   MEMORY GAME
-────────────────────────────────────────── */
-let memPattern = [], memPlayer = [], canPlay = false;
- 
-function setupMemory() {
-  const g = document.getElementById("memoryGrid");
-  if (g.children.length > 0) return;
-  for (let i = 0; i < 9; i++) {
-    const d = document.createElement("div");
-    d.className = "memBox";
-    onTap(d, () => pressMemory(i));
-    g.appendChild(d);
-  }
-}
- 
-function startMemory() {
-  memPattern = []; memPlayer = []; canPlay = false;
-  document.getElementById("shareMemory").style.display = "none";
-  document.getElementById("memoryStatus").innerText = "Watch the pattern...";
- 
-  for (let i = 0; i < memoryLength; i++) memPattern.push(Math.floor(Math.random() * 9));
- 
-  const speed = memoryDiff === "easy" ? 550 : memoryDiff === "medium" ? 380 : 240;
-  const boxes = document.querySelectorAll(".memBox");
-  let i = 0;
- 
-  const interval = setInterval(() => {
-    if (i > 0) boxes[memPattern[i - 1]].classList.remove("memActive");
-    if (i >= memPattern.length) {
-      clearInterval(interval);
-      canPlay = true;
-      document.getElementById("memoryStatus").innerText = "Your turn! Tap in order.";
-      return;
-    }
-    boxes[memPattern[i]].classList.add("memActive");
-    playSound("click");
-    i++;
-  }, speed);
-}
- 
-function pressMemory(i) {
-  if (!canPlay) return;
-  memPlayer.push(i);
-  const idx = memPlayer.length - 1;
- 
-  if (memPlayer[idx] !== memPattern[idx]) {
-    document.querySelectorAll(".memBox")[i].classList.add("memWrong");
-    setTimeout(() => document.querySelectorAll(".memBox")[i].classList.remove("memWrong"), 400);
-    document.getElementById("memoryStatus").innerText = `❌ Wrong! Score: ${idx}/${memPattern.length}`;
-    canPlay = false;
-    playSound("fail");
- 
-    addScore("memory", idx);
-    const best = getBest("memory", false);
-    const bx   = document.getElementById("memoryBestDisplay");
-    bx.innerHTML = best ? `<div class="score-row"><span>Best</span><span class="score-best">${best}/${memPattern.length} 🏆</span></div>` : "";
-    document.getElementById("memoryScoreBox").style.display = "block";
-    return;
-  }
- 
-  playSound("click");
- 
-  if (memPlayer.length === memPattern.length) {
-    document.getElementById("memoryStatus").innerText = "✅ Perfect! You nailed it!";
-    canPlay = false;
-    playSound("win");
- 
-    addScore("memory", memPattern.length);
-    const best = getBest("memory", false);
-    document.getElementById("memoryBestDisplay").innerHTML =
-      `<div class="score-row"><span>Best</span><span class="score-best">${best}/${memPattern.length} 🏆</span></div>`;
-    document.getElementById("memoryScoreBox").style.display = "block";
-    lastScores.memory = "completed a " + memPattern.length + "-step memory pattern";
-    document.getElementById("shareMemory").style.display = "block";
-  }
-}
- 
-/* ──────────────────────────────────────────
-   TYPING GAME
-────────────────────────────────────────── */
-const textsEasy = [
-  "reflexzone trains your brain fast",
-  "speed matters in games and in life",
-  "focus improves reaction time daily",
-  "practice makes your typing perfect",
-  "fast hands win competitive fights",
-  "keep your eyes on the screen ahead",
-  "type as fast as you possibly can",
-  "train your fingers every single day",
-  "winners never ever stop trying hard",
-  "stay sharp and stay completely focused"
-];
- 
-const textsMedium = [
-  "the quick brown fox jumps over the lazy dog",
-  "every second of practice counts toward mastery",
-  "reaction speed separates champions from average players",
-  "your fingers should move faster than your thoughts do",
-  "consistent training builds solid muscle memory over time",
-  "the best gamers practice their craft every single day",
-  "typing speed improves greatly with deliberate daily practice",
-  "speed and accuracy must both be trained carefully together",
-  "focus on the words shown and let your fingers follow",
-  "champions are made in the quiet hours nobody else sees"
-];
- 
-const textsHard = [
-  "extraordinary performance requires extraordinary dedication and consistency",
-  "the difference between good and great is measured in milliseconds",
-  "cognitive speed and motor precision are the foundations of reflex mastery",
-  "professional gamers train their reaction time through hundreds of daily repetitions",
-  "developing automaticity requires sustained focused practice over many weeks of effort",
-  "your brain rewires itself through repetition building faster neural pathways each time",
-  "elite performers visualize success clearly before executing at maximum competitive intensity",
-  "the subconscious mind processes information far faster than conscious thought alone ever could",
-  "peripheral vision and sharp anticipation are critical skills for any competitive gaming career",
-  "mastery is not a destination but a continuous process of deliberate and consistent improvement"
-];
- 
-let typingSentence = "";
-let startTypingTime;
- 
-function startTyping() {
-  const pool = typingDiff === "easy" ? textsEasy : typingDiff === "medium" ? textsMedium : textsHard;
-  typingSentence = pool[Math.floor(Math.random() * pool.length)];
-  document.getElementById("sentence").innerText    = typingSentence;
-  document.getElementById("typeInput").value       = "";
-  document.getElementById("typingResult").innerText = "";
-  document.getElementById("shareTyping").style.display = "none";
-  startTypingTime = Date.now();
-  document.getElementById("typeInput").focus();
-}
- 
-function checkTyping() {
-  const v = document.getElementById("typeInput").value;
-  if (v === typingSentence) {
-    const t   = (Date.now() - startTypingTime) / 1000;
-    const wpm = Math.round((typingSentence.split(" ").length / t) * 60);
-    document.getElementById("typingResult").innerText = "✅ Done! " + wpm + " WPM";
-    playSound("win");
- 
-    addScore("typing", wpm);
-    const best = getBest("typing", false);
-    if (best) {
-      document.getElementById("typingBestVal").innerText = "Best: " + best + " WPM";
-      document.getElementById("typingBestWrap").style.display = "inline-flex";
-    }
-    renderHistory("typingHistoryList", "typing", " WPM", false);
-    lastScores.typing = wpm + " WPM";
-    document.getElementById("shareTyping").style.display = "block";
-  }
-}
- 
-/* ──────────────────────────────────────────
-   REACTION GAME — unified tap fix
-────────────────────────────────────────── */
-let reactionState   = "idle";
-let reactionTimeout;
-let reactionStart;
- 
-function handleReactionTap() {
-  const box  = document.getElementById("box");
-  const rank = document.getElementById("rank");
- 
-  if (reactionState === "idle") {
-    reactionState = "waiting";
-    box.className = "wait";
-    box.innerText = "Wait...";
-    rank.innerText = "";
-    document.getElementById("shareReaction").style.display = "none";
- 
-    const minDelay = reactionDiff === "easy" ? 2000 : reactionDiff === "medium" ? 1500 : 800;
-    const maxDelay = reactionDiff === "easy" ? 5000 : reactionDiff === "medium" ? 3000 : 1800;
-    const delay    = minDelay + Math.random() * (maxDelay - minDelay);
- 
-    reactionTimeout = setTimeout(() => {
-      reactionState = "go";
-      box.className = "go";
-      box.innerText = "NOW!";
-      reactionStart = Date.now();
-      playSound("go");
-    }, delay);
- 
-  } else if (reactionState === "waiting") {
-    clearTimeout(reactionTimeout);
-    reactionState = "idle";
-    box.className = "";
-    box.innerText = "Too early! Try again";
-    rank.innerText = "";
-    playSound("fail");
- 
-  } else if (reactionState === "go") {
-    const ms      = Date.now() - reactionStart;
-    reactionState = "idle";
-    box.className = "";
-    box.innerText = "TAP TO START";
- 
-    const r = ms < 150 ? "🌟 Superhuman" : ms < 200 ? "⚡ Legendary" : ms < 300 ? "🔥 Pro" : ms < 450 ? "✅ Average" : "🐢 Slow";
-    rank.innerText = ms + "ms — " + r;
-    playSound("win");
- 
-    addScore("reaction", ms);
-    const best = getBest("reaction", true);
-    if (best) {
-      document.getElementById("reactionBestVal").innerText = "Best: " + best + "ms";
-      document.getElementById("reactionBestWrap").style.display = "inline-flex";
-    }
-    renderHistory("reactionHistoryList", "reaction", "ms", true);
-    lastScores.reaction = ms + "ms (" + r.replace(/[^\w\s]/gi, "").trim() + ")";
-    document.getElementById("shareReaction").style.display = "block";
-  }
-}
- 
-// Attach unified tap to reaction box
-onTap(document.getElementById("box"), handleReactionTap);
- 
-/* ──────────────────────────────────────────
-   SHARE
-────────────────────────────────────────── */
-const siteURL   = "https://react321.github.io/ReflexZone/";
-const lastScores = { reaction: "", typing: "", memory: "", cps: "" };
- 
-function shareTwitter(game) {
-  const names = { reaction: "Reaction Test", typing: "Typing Speed Test", memory: "Memory Game", cps: "CPS Challenge" };
-  const text  = `I just played ${names[game]} on ReflexZone and scored ${lastScores[game]}! Can you beat me? ⚡ #ReflexZone`;
-  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(siteURL), "_blank");
-}
- 
-function shareWhatsApp(game) {
-  const names = { reaction: "Reaction Test", typing: "Typing Speed Test", memory: "Memory Game", cps: "CPS Challenge" };
-  const text  = `I scored ${lastScores[game]} on ReflexZone's ${names[game]}! Test your reflexes here: ${siteURL}`;
-  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
-}
- 
-function copyLink() {
-  navigator.clipboard.writeText(siteURL).then(() => alert("Link copied! 🎮"));
-}
-</script>
 </body>
 </html>
